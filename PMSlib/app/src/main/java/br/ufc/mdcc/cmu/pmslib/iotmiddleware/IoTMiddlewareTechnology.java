@@ -36,10 +36,9 @@ public final class IoTMiddlewareTechnology extends IoTMiddlewareAdapterInterface
         this.ioTMiddlewareAdapter = ioTMiddlewareAdapter;
     }
 
-
     @Override
     public void receiveData(IoTMiddlewareListener ioTMiddlewareListener) throws IoTMiddlewareException {
-        this.receiveData();
+        this.ioTMiddlewareAdapter.receiveData(ioTMiddlewareListener);
     }
 
     @Override
