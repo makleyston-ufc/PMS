@@ -2,9 +2,9 @@ package br.ufc.mdcc.cmu.pmslib;
 
 import android.content.Context;
 
-import br.ufc.mdcc.cmu.pmslib.brokermqtt.BrokerMQTTAdapterImpl;
-import br.ufc.mdcc.cmu.pmslib.brokermqtt.BrokerMQTTAdapterInterface;
-import br.ufc.mdcc.cmu.pmslib.brokermqtt.BrokerMQTTAdapterTechnology;
+import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterImpl;
+import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterInterface;
+import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterTechnology;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterImpl;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareListenerImpl;
@@ -15,7 +15,7 @@ public class PMS implements PMSInterface {
     private Context context = null;
 
     /*Technologies*/
-    private BrokerMQTTAdapterTechnology brokerMQTTTechnology = null;
+    private MQTTBrokerAdapterTechnology brokerMQTTTechnology = null;
     private IoTMiddlewareTechnology ioTMiddlewareTechnology = null;
 
     private static PMS instance = null;
@@ -55,8 +55,8 @@ public class PMS implements PMSInterface {
     }
 
     private void initBrokerMQTTAdapter(Context context){
-        BrokerMQTTAdapterInterface brokerMQTTAdapter = new BrokerMQTTAdapterImpl();
-        brokerMQTTTechnology = BrokerMQTTAdapterTechnology.getBrokerTechnology(context);
+        MQTTBrokerAdapterInterface brokerMQTTAdapter = new MQTTBrokerAdapterImpl();
+        brokerMQTTTechnology = MQTTBrokerAdapterTechnology.getBrokerTechnology(context);
         brokerMQTTTechnology.setBrokerAdapter(brokerMQTTAdapter);
     }
 

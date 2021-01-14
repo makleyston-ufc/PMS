@@ -4,6 +4,10 @@ import android.util.Log;
 
 import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
 
+/**
+ * Created by makleyston on 14/01/2021.
+ */
+
 public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
 
     private final String TAG = getClass().getSimpleName();

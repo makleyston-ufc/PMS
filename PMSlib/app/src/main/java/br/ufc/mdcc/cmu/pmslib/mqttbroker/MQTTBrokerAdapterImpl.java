@@ -1,8 +1,16 @@
-package br.ufc.mdcc.cmu.pmslib.brokermqtt;
+package br.ufc.mdcc.cmu.pmslib.mqttbroker;
 
 import android.util.Log;
 
+/**
+ * Created by makleyston on 14/01/2021
+ */
+
+<<<<<<< HEAD:PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/mqttbroker/MQTTBrokerAdapterImpl.java
+public class MQTTBrokerAdapterImpl implements MQTTBrokerAdapterInterface {
+=======
 public class BrokerMQTTAdapterImpl implements BrokerMQTTAdapterInterface {
+>>>>>>> BrokerMQTT:PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/brokermqtt/BrokerMQTTAdapterImpl.java
     boolean active = false;
     private final String TAG = getClass().getSimpleName();
 
