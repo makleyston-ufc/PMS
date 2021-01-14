@@ -18,7 +18,7 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
 
     @Override
     public void loadKnowledge(Object obg) throws OntologyFrameworkException {
-        Log.d(TAG, ">> loadKnowledge obg");
+        Log.d(TAG, ">> loadKnowledge obj");
     }
 
     @Override
