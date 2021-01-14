@@ -8,7 +8,11 @@ import br.ufc.mdcc.cmu.pmslib.exception.BrokerMQTTException;
  * Created by makleyston on 14/01/2021
  */
 
+<<<<<<< HEAD:PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/mqttbroker/MQTTBrokerAdapterTechnology.java
 public final class MQTTBrokerAdapterTechnology implements MQTTBrokerAdapterInterface {
+=======
+public final class BrokerMQTTAdapterTechnology implements BrokerMQTTAdapterInterface {
+>>>>>>> BrokerMQTT:PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/brokermqtt/BrokerMQTTAdapterTechnology.java
 
     private Context context = null;
     private MQTTBrokerAdapterInterface brokerAdapter = null;

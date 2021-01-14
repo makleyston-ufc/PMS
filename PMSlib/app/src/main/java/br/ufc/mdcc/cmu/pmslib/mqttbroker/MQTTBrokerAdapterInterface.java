@@ -6,7 +6,11 @@ import br.ufc.mdcc.cmu.pmslib.exception.BrokerMQTTException;
  * Created by makleyston on 14/01/2021
  */
 
+<<<<<<< HEAD:PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/mqttbroker/MQTTBrokerAdapterInterface.java
 public interface MQTTBrokerAdapterInterface {
+=======
+public interface BrokerMQTTAdapterInterface {
+>>>>>>> BrokerMQTT:PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/brokermqtt/BrokerMQTTAdapterInterface.java
 
     /**
      * This method is called to start the MQTT broker
