@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.CallSuper;
 
+import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTProtocol;
+
 /**
  * Created by makleyston on 14/01/2021
  */
@@ -41,7 +43,8 @@ public abstract class StatementSubscriber {
     @CallSuper
     public void update(Object eventMap){
         if(eventMap != null){
-            MQTTProtocol.publish(getDescription());
+            mqttProtocol = MQTTProtocol.getInstance(this.context);
+            mqttProtocol.publish(getDescription());
         }
     }
 }
