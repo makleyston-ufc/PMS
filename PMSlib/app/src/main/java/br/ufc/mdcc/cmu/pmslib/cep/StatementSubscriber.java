@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.annotation.CallSuper;
 
 /**
- * Created by makleyston on 14/01/2021.
+ * Created by makleyston on 14/01/2021
  */
 
 public abstract class StatementSubscriber {
