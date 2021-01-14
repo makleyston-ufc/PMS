@@ -1,16 +1,22 @@
 package br.ufc.mdcc.cmu.pmslib.brokermqtt;
 
+import br.ufc.mdcc.cmu.pmslib.exception.BrokerMQTTException;
+
+/**
+ * Created by makleyston on 14/01/2021
+ */
+
 public interface BrokerMQTTAdapterInterface {
 
     /**
      * This method is called to start the MQTT broker
      */
-    public void start();
+    public void start() throws BrokerMQTTException;
 
     /**
      * This method is called to stop the MQTT broker
      */
-    public void stop();
+    public void stop() throws BrokerMQTTException;
 
     /**
      * This method is called to verify if that the broker is active

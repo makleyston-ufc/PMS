@@ -2,6 +2,12 @@ package br.ufc.mdcc.cmu.pmslib.brokermqtt;
 
 import android.content.Context;
 
+import br.ufc.mdcc.cmu.pmslib.exception.BrokerMQTTException;
+
+/**
+ * Created by makleyston on 14/01/2021
+ */
+
 public final class BrokerMQTTAdapterTechnology implements BrokerMQTTAdapterInterface {
 
     private Context context = null;
@@ -28,12 +34,12 @@ public final class BrokerMQTTAdapterTechnology implements BrokerMQTTAdapterInter
     }
 
     @Override
-    public void start() {
+    public void start() throws BrokerMQTTException {
         this.brokerAdapter.start();
     }
 
     @Override
-    public void stop() {
+    public void stop() throws BrokerMQTTException {
         this.brokerAdapter.stop();
     }
 
