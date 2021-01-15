@@ -19,16 +19,25 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
     @Override
     public void onReceiveData(IoTMiddlewareListener ioTMiddlewareListener) {
         receiveDataLocal(ioTMiddlewareListener);
+        //TODO
     }
 
     @Override
     public void start() throws IoTMiddlewareException {
         Log.d(TAG, "startIoTMiddleware");
+        //TODO
     }
 
     @Override
     public void stop() throws IoTMiddlewareException {
         Log.d(TAG, "stopIoTMiddleware");
+        //TODO
+    }
+
+    @Override
+    public boolean isActive() {
+        return true;
+        //TODO
     }
 
     /*Test implementation*/

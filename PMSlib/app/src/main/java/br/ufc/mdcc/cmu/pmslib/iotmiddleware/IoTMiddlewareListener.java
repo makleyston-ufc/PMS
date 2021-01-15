@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.CallSuper;
 
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
+import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 
 /**
  * Created by makleyston on 14/01/2021
@@ -13,9 +14,11 @@ import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 public abstract class IoTMiddlewareListener {
 
     private Context context = null;
+    private OntologyFrameworkTechnology ontologyFrameworkTechnology = null;
 
     public IoTMiddlewareListener(Context context){
         this.context = context;
+        this.ontologyFrameworkTechnology = OntologyFrameworkTechnology.getInstance(context);
     }
 
     /**
@@ -25,6 +28,7 @@ public abstract class IoTMiddlewareListener {
      */
     @CallSuper
     public void onReceiveData(SensorInterface sensor){
+        Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
 
     }
 

@@ -2,29 +2,32 @@ package br.ufc.mdcc.cmu.pmslib.mqttbroker;
 
 import android.util.Log;
 
+import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
+
 /**
  * Created by makleyston on 14/01/2021
  */
 
-public class MQTTBrokerAdapterImpl implements MQTTBrokerAdapterInterface {
+public class MQTTBrokerAdapterImpl extends MQTTBrokerAdapterInterface {
 
-    boolean active = false;
     private final String TAG = getClass().getSimpleName();
 
     @Override
-    public void start() {
-        this.active = true;
+    public void start() throws MQTTBrokerException {
         Log.d(TAG, "Initialized Broker MQTT");
+        //TODO
     }
 
     @Override
-    public void stop() {
-        this.active = false;
+    public void stop() throws MQTTBrokerException {
         Log.d(TAG, "Finished Broker MQTT");
+        //TODO
     }
 
     @Override
     public boolean isActive() {
-        return this.active;
+        return true;
+        //TODO
     }
+
 }

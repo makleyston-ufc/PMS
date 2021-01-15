@@ -3,6 +3,7 @@ package br.ufc.mdcc.cmu.pmslib.ontology;
 import android.content.Context;
 
 import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
+import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 
 public final class OntologyFrameworkTechnology extends OntologyFrameworkAdapterInterface {
 
@@ -10,7 +11,7 @@ public final class OntologyFrameworkTechnology extends OntologyFrameworkAdapterI
 
     private Context context = null;
 
-    private OntologyFrameworkAdapterInterface frameworkOntologyAdapter = null;
+    private OntologyFrameworkAdapterInterface ontologyFrameworkAdapter = null;
 
     private OntologyFrameworkTechnology(Context context){
         this.context = context;
@@ -23,31 +24,36 @@ public final class OntologyFrameworkTechnology extends OntologyFrameworkAdapterI
     }
 
     public OntologyFrameworkAdapterInterface getOntologyFrameworkAdapter() {
-        return frameworkOntologyAdapter;
+        return ontologyFrameworkAdapter;
     }
 
     public void setOntologyFrameworkAdapter(OntologyFrameworkAdapterInterface ontologyFrameworkAdapter) {
-        this.frameworkOntologyAdapter = ontologyFrameworkAdapter;
+        this.ontologyFrameworkAdapter = ontologyFrameworkAdapter;
     }
 
     @Override
     public void loadKnowledge(String path) throws OntologyFrameworkException {
-        this.frameworkOntologyAdapter.loadKnowledge(path);
+        this.ontologyFrameworkAdapter.loadKnowledge(path);
     }
 
     @Override
     public void loadKnowledge(Object obg) throws OntologyFrameworkException {
-        this.frameworkOntologyAdapter.loadKnowledge(obg);
+        this.ontologyFrameworkAdapter.loadKnowledge(obg);
     }
 
     @Override
     public void start() throws OntologyFrameworkException{
-        this.frameworkOntologyAdapter.start();
+        this.ontologyFrameworkAdapter.start();
     }
 
     @Override
     public void stop() throws OntologyFrameworkException{
-        this.frameworkOntologyAdapter.stop();
+        this.ontologyFrameworkAdapter.stop();
+    }
+
+    @Override
+    public Object semanticAnnotation(SensorInterface sensor) {
+        return this.ontologyFrameworkAdapter.semanticAnnotation(sensor);
     }
 
 }

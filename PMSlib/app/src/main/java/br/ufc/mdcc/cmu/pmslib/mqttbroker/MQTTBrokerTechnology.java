@@ -8,7 +8,7 @@ import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
  * Created by makleyston on 14/01/2021
  */
 
-public final class MQTTBrokerTechnology implements MQTTBrokerAdapterInterface {
+public final class MQTTBrokerTechnology extends MQTTBrokerAdapterInterface {
 
     private Context context = null;
     private MQTTBrokerAdapterInterface brokerAdapter = null;

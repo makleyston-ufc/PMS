@@ -84,4 +84,6 @@ public abstract class IoTMiddlewareAdapterInterface{
         this.context = context;
     }
 
+    public abstract boolean isActive();
+
 }

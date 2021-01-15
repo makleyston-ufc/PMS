@@ -31,6 +31,11 @@ public final class IoTMiddlewareTechnology extends IoTMiddlewareAdapterInterface
         this.ioTMiddlewareAdapter.setListener(ioTMiddlewareListener);
     }
 
+    @Override
+    public boolean isActive() {
+        return this.ioTMiddlewareAdapter.isActive();
+    }
+
     public void setIoTMiddlewareAdapter(IoTMiddlewareAdapterInterface ioTMiddlewareAdapter){
         this.ioTMiddlewareAdapter = ioTMiddlewareAdapter;
     }

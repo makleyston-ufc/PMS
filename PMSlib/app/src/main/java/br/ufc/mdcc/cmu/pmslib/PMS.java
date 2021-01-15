@@ -57,14 +57,20 @@ public class PMS implements PMSInterface {
     }
 
     private void init(Context context){
-        //Init the ontology framework
-        this.initIoTMiddleware(context);
+        try {
+            //Init the IoT middleware
+            this.initIoTMiddleware(context);
+
+            //Init the ontology framework
+            this.initOntologyFramework(context);
+
+        } catch (IoTMiddlewareException | OntologyFrameworkException e) {
+            e.getMessage();
+            e.printStackTrace();
+        }
 
         //Init the MQTT Broker
         //this.initMQTTBrokerAdapter(context);
-
-        //Init the IoT middleware
-        //this.initOntologyFramework(context);
 
         //Init the CEP
         //this.initCEP();
@@ -87,25 +93,34 @@ public class PMS implements PMSInterface {
         }
     }
 
-    private void initMQTTBrokerAdapter(Context context){
+    private void initMQTTBrokerAdapter(Context context) throws MQTTBrokerException {
         MQTTBrokerAdapterInterface brokerMQTTAdapter = new MQTTBrokerAdapterImpl();
         mqttBrokerTechnology = MQTTBrokerTechnology.getBrokerTechnology(context);
         mqttBrokerTechnology.setBrokerAdapter(brokerMQTTAdapter);
+
+        if(!mqttBrokerTechnology.isActive())
+            mqttBrokerTechnology.start();
     }
 
-    private void initOntologyFramework(Context context){
+    private void initOntologyFramework(Context context) throws OntologyFrameworkException {
         OntologyFrameworkAdapterInterface ontologyFrameworkAdapter = new OntologyFrameworkAdapterImpl();
         ontologyFrameworkTechnology = OntologyFrameworkTechnology.getInstance(context);
         ontologyFrameworkTechnology.setOntologyFrameworkAdapter(ontologyFrameworkAdapter);
+
+        ontologyFrameworkTechnology.loadKnowledge("");
+        ontologyFrameworkTechnology.start();
     }
 
-    private void initIoTMiddleware(Context context){
+    private void initIoTMiddleware(Context context) throws IoTMiddlewareException {
         IoTMiddlewareAdapterInterface ioTMiddlewareAdapter = new IoTMiddlewareAdapterImpl();
         ioTMiddlewareTechnology = IoTMiddlewareTechnology.getInstance(context);
         ioTMiddlewareTechnology.setIoTMiddlewareAdapter(ioTMiddlewareAdapter);
 
         IoTMiddlewareListenerImpl ioTMiddlewareListener = new IoTMiddlewareListenerImpl(context);
         ioTMiddlewareTechnology.setListener(ioTMiddlewareListener);
+
+        if(!ioTMiddlewareTechnology.is)
+        ioTMiddlewareTechnology.start();
     }
 
     private void initCEP(){
