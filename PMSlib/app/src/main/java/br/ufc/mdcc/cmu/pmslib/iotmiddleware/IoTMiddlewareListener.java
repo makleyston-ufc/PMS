@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.CallSuper;
 
+import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
+
 /**
  * Created by makleyston on 14/01/2021
  */

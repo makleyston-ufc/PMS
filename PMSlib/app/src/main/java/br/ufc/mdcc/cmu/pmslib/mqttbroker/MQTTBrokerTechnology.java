@@ -8,15 +8,15 @@ import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
  * Created by makleyston on 14/01/2021
  */
 
-public final class MQTTBrokerAdapterTechnology implements MQTTBrokerAdapterInterface {
+public final class MQTTBrokerTechnology implements MQTTBrokerAdapterInterface {
 
     private Context context = null;
     private MQTTBrokerAdapterInterface brokerAdapter = null;
-    private static MQTTBrokerAdapterTechnology brokerTechnology = null;
+    private static MQTTBrokerTechnology brokerTechnology = null;
 
-    public static MQTTBrokerAdapterTechnology getBrokerTechnology(Context context) {
+    public static MQTTBrokerTechnology getBrokerTechnology(Context context) {
         if(brokerTechnology == null){
-            brokerTechnology = new MQTTBrokerAdapterTechnology(context);
+            brokerTechnology = new MQTTBrokerTechnology(context);
         }
         return brokerTechnology;
     }
@@ -29,7 +29,7 @@ public final class MQTTBrokerAdapterTechnology implements MQTTBrokerAdapterInter
         return this.brokerAdapter;
     }
 
-    private MQTTBrokerAdapterTechnology(Context context){
+    private MQTTBrokerTechnology(Context context){
         this.context = context;
     }
 

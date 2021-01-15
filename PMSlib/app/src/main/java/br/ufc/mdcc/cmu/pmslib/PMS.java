@@ -1,10 +1,15 @@
 package br.ufc.mdcc.cmu.pmslib;
 
 import android.content.Context;
+import android.util.Log;
 
+import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
+import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
+import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
+import br.ufc.mdcc.cmu.pmslib.exception.PMSException;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterImpl;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterInterface;
-import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterTechnology;
+import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerTechnology;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterImpl;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareListenerImpl;
@@ -18,11 +23,13 @@ public class PMS implements PMSInterface {
     private Context context = null;
 
     /*Technologies*/
-    private MQTTBrokerAdapterTechnology brokerMQTTTechnology = null;
+    private MQTTBrokerTechnology mqttBrokerTechnology = null;
     private IoTMiddlewareTechnology ioTMiddlewareTechnology = null;
     private OntologyFrameworkTechnology ontologyFrameworkTechnology = null;
 
     private static PMS instance = null;
+    private boolean active = false;
+    private final String TAG = getClass().getSimpleName();
 
     private PMS(Context context){
         this.context = context;
@@ -35,12 +42,17 @@ public class PMS implements PMSInterface {
     }
 
     @Override
-    public void start() {
-
+    public void start() throws PMSException {
+        if(!this.active) {
+            init(this.context);
+            this.active = true;
+            Log.i(TAG, "PMS initialized successfully!");
+        }else
+            Log.i(TAG, "PMS already initialized!");
     }
 
     @Override
-    public void stop() {
+    public void stop() throws PMSException{
 
     }
 
@@ -49,19 +61,36 @@ public class PMS implements PMSInterface {
         this.initIoTMiddleware(context);
 
         //Init the MQTT Broker
-        this.initBrokerMQTTAdapter(context);
+        //this.initMQTTBrokerAdapter(context);
 
         //Init the IoT middleware
-        this.initOntologyFramework(context);
+        //this.initOntologyFramework(context);
 
         //Init the CEP
-        this.initCEP();
+        //this.initCEP();
     }
 
-    private void initBrokerMQTTAdapter(Context context){
+    private void end(){
+        try {
+            ioTMiddlewareTechnology.stop();
+            ontologyFrameworkTechnology.stop();
+            mqttBrokerTechnology.stop();
+        } catch (IoTMiddlewareException e) {
+            e.getMessage();
+            e.printStackTrace();
+        } catch (OntologyFrameworkException e) {
+            e.getMessage();
+            e.printStackTrace();
+        } catch (MQTTBrokerException e) {
+            e.getMessage();
+            e.printStackTrace();
+        }
+    }
+
+    private void initMQTTBrokerAdapter(Context context){
         MQTTBrokerAdapterInterface brokerMQTTAdapter = new MQTTBrokerAdapterImpl();
-        brokerMQTTTechnology = MQTTBrokerAdapterTechnology.getBrokerTechnology(context);
-        brokerMQTTTechnology.setBrokerAdapter(brokerMQTTAdapter);
+        mqttBrokerTechnology = MQTTBrokerTechnology.getBrokerTechnology(context);
+        mqttBrokerTechnology.setBrokerAdapter(brokerMQTTAdapter);
     }
 
     private void initOntologyFramework(Context context){

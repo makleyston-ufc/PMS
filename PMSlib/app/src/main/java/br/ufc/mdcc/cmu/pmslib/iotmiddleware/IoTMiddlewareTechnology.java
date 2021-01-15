@@ -1,7 +1,6 @@
 package br.ufc.mdcc.cmu.pmslib.iotmiddleware;
 
 import android.content.Context;
-import android.util.Log;
 
 import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
 
@@ -37,18 +36,18 @@ public final class IoTMiddlewareTechnology extends IoTMiddlewareAdapterInterface
     }
 
     @Override
-    public void receiveData(IoTMiddlewareListener ioTMiddlewareListener) throws IoTMiddlewareException {
-        this.ioTMiddlewareAdapter.receiveData(ioTMiddlewareListener);
+    public void onReceiveData(IoTMiddlewareListener ioTMiddlewareListener) {
+        this.ioTMiddlewareAdapter.onReceiveData(ioTMiddlewareListener);
     }
 
     @Override
-    public void startIotMiddleware() throws IoTMiddlewareException {
-        this.ioTMiddlewareAdapter.startIotMiddleware();
+    public void start() throws IoTMiddlewareException {
+        this.ioTMiddlewareAdapter.start();
     }
 
     @Override
-    public void stopIotMiddleware() throws IoTMiddlewareException {
-        this.ioTMiddlewareAdapter.stopIotMiddleware();
+    public void stop() throws IoTMiddlewareException {
+        this.ioTMiddlewareAdapter.stop();
     }
 
     public IoTMiddlewareAdapterInterface getIoTMiddlewareAdapter(){
