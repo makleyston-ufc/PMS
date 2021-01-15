@@ -1,7 +1,6 @@
 package br.ufc.mdcc.cmu.pmslib.cep;
 
 import android.content.Context;
-import android.hardware.Sensor;
 import android.util.Log;
 
 import com.espertech.esper.client.Configuration;
@@ -11,72 +10,65 @@ import com.espertech.esper.client.EPStatement;
 
 import java.util.ArrayList;
 
+import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
+import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
+
 /**
  * Created by makleyston on 14/01/2021
  */
 
-public final class EventHandler{
+public final class CEPEventHandler {
 
-    public static EventHandler instance = null;
+    public static CEPEventHandler instance = null;
     private Context context = null;
-    private ArrayList<Class<Sensor>> sensorClassArrayList = new ArrayList<>();
+    private ArrayList<Class<SensorInterface>> sensorClassArrayList = new ArrayList<>();
     private boolean active = false;
-
-    private EventHandler(){}
-
-    public static EventHandler getInstance(Context context){
-        if(instance == null){
-            instance = new EventHandler();
-            instance.setContext(context);
-        }
-        return instance;
-    }
-
-    public boolean isActived() {
-        return this.active;
-    }
-
-    public Context getContext() {
-        return context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
     /** Asper service **/
     private EPServiceProvider epService;
     private EPStatement epStatement;
     final private String TAG = getClass().getSimpleName();
 
-    public void handle(Sensor evt){
-        for (Class<Sensor> s: sensorClassArrayList) {
+
+    private CEPEventHandler(){}
+
+    public static CEPEventHandler getInstance(Context context){
+        if(instance == null){
+            instance = new CEPEventHandler();
+            instance.setContext(context);
+        }
+        return instance;
+    }
+
+    public void eventHandle(SensorInterface evt){
+        for (Class<SensorInterface> s: sensorClassArrayList) {
             if(evt.getClass() == s) {
                 epService.getEPRuntime().sendEvent(evt);
             }
         }
     }
 
-    public void initService() {
+    public void start() throws CEPException {
         if(this.active) return;
         Configuration cepConfig = new Configuration();
-        for (Class<Sensor> s: sensorClassArrayList) {
+        for (Class<SensorInterface> s: sensorClassArrayList) {
             cepConfig.addEventType(s.getSimpleName(), s.getName());
         }
         epService = EPServiceProviderManager.getDefaultProvider(cepConfig);
+        epService.initialize(); //Verificar se está correto!
         this.active = true;
         Log.i(TAG, "CEP started successfully!");
     }
 
-    public void endService(){
+    public void stop() throws CEPException{
+        try{
         epStatement.stop();
         epService.destroy();
-        this.active = false;
-    }
-
-    public void stopService(){
-        //epStatement.stop();
-        this.active = false;
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            Log.i(TAG, "CEP stopped successfully!");
+            this.active = false;
+        }
     }
 
     public void resumeService(){
@@ -88,7 +80,16 @@ public final class EventHandler{
         epService.getEPAdministrator().destroyAllStatements();
     }
 
-    private void addSensorClass(Class<Sensor> sensorClass){
+    public void addSensorClass(Class<SensorInterface> sensorClass){
         this.sensorClassArrayList.add(sensorClass);
+    }
+
+
+    public boolean isActive() {
+        return this.active;
+    }
+
+    private void setContext(Context context) {
+        this.context = context;
     }
 }

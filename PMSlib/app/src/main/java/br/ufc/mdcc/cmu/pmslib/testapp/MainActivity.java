@@ -1,9 +1,11 @@
-package br.ufc.mdcc.cmu.pmslib;
+package br.ufc.mdcc.cmu.pmslib.testapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import br.ufc.mdcc.cmu.pmslib.PMS;
+import br.ufc.mdcc.cmu.pmslib.R;
 import br.ufc.mdcc.cmu.pmslib.exception.PMSException;
 
 public class MainActivity extends AppCompatActivity {

@@ -37,7 +37,7 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
 
     @Override
     public Object semanticAnnotation(SensorInterface sensor) {
-        Log.d(TAG, ">> TODO: To do semantic annotation of readed sensor");
+        Log.d(TAG, ">> To do semantic annotation of readed sensor");
         //TODO
         return null;
     }

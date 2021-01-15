@@ -3,6 +3,8 @@ package br.ufc.mdcc.cmu.pmslib;
 import android.content.Context;
 import android.util.Log;
 
+import br.ufc.mdcc.cmu.pmslib.cep.CEPEventHandler;
+import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
 import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
 import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
 import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
@@ -26,6 +28,7 @@ public class PMS implements PMSInterface {
     private MQTTBrokerTechnology mqttBrokerTechnology = null;
     private IoTMiddlewareTechnology ioTMiddlewareTechnology = null;
     private OntologyFrameworkTechnology ontologyFrameworkTechnology = null;
+    private CEPEventHandler cepEventHandler = null;
 
     private static PMS instance = null;
     private boolean active = false;
@@ -53,7 +56,12 @@ public class PMS implements PMSInterface {
 
     @Override
     public void stop() throws PMSException{
-
+        if(this.active){
+            end();
+            this.active = false;
+            Log.i(TAG, "PMS stopped successfully!");
+        }else
+            Log.i(TAG, "PMS already stopped!");
     }
 
     private void init(Context context){
@@ -64,16 +72,16 @@ public class PMS implements PMSInterface {
             //Init the ontology framework
             this.initOntologyFramework(context);
 
-        } catch (IoTMiddlewareException | OntologyFrameworkException e) {
+            //Init the MQTT Broker
+            this.initMQTTBrokerAdapter(context);
+
+            //Init the CEP
+            this.initCEP(context);
+
+        } catch (IoTMiddlewareException | OntologyFrameworkException | MQTTBrokerException | CEPException e) {
             e.getMessage();
             e.printStackTrace();
         }
-
-        //Init the MQTT Broker
-        //this.initMQTTBrokerAdapter(context);
-
-        //Init the CEP
-        //this.initCEP();
     }
 
     private void end(){
@@ -81,13 +89,8 @@ public class PMS implements PMSInterface {
             ioTMiddlewareTechnology.stop();
             ontologyFrameworkTechnology.stop();
             mqttBrokerTechnology.stop();
-        } catch (IoTMiddlewareException e) {
-            e.getMessage();
-            e.printStackTrace();
-        } catch (OntologyFrameworkException e) {
-            e.getMessage();
-            e.printStackTrace();
-        } catch (MQTTBrokerException e) {
+            cepEventHandler.stop();
+        } catch (IoTMiddlewareException | OntologyFrameworkException | MQTTBrokerException | CEPException e) {
             e.getMessage();
             e.printStackTrace();
         }
@@ -119,11 +122,18 @@ public class PMS implements PMSInterface {
         IoTMiddlewareListenerImpl ioTMiddlewareListener = new IoTMiddlewareListenerImpl(context);
         ioTMiddlewareTechnology.setListener(ioTMiddlewareListener);
 
-        if(!ioTMiddlewareTechnology.is)
-        ioTMiddlewareTechnology.start();
+        if(!ioTMiddlewareTechnology.isActive())
+            ioTMiddlewareTechnology.start();
     }
 
-    private void initCEP(){
+    private void initCEP(Context context) throws CEPException {
+        cepEventHandler = CEPEventHandler.getInstance(context);
+
+        //TODO: Fazer as classes para o CEP
+        cepEventHandler.addSensorClass(null);
+
+        if(!cepEventHandler.isActive())
+            cepEventHandler.start();
 
     }
 

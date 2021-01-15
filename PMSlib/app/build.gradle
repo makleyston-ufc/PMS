@@ -34,4 +34,5 @@ dependencies {
     implementation files('libs/asper-4.9.0.jar')
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    implementation files('libs/cmm_api.jar')
 }
