@@ -22,12 +22,12 @@ public final class OntologyFrameworkTechnology extends OntologyFrameworkAdapterI
         return instance;
     }
 
-    public OntologyFrameworkAdapterInterface getFrameworkOntologyAdapter() {
+    public OntologyFrameworkAdapterInterface getOntologyFrameworkAdapter() {
         return frameworkOntologyAdapter;
     }
 
-    public void setFrameworkOntologyAdapter(OntologyFrameworkAdapterInterface frameworkOntologyAdapter) {
-        this.frameworkOntologyAdapter = frameworkOntologyAdapter;
+    public void setOntologyFrameworkAdapter(OntologyFrameworkAdapterInterface ontologyFrameworkAdapter) {
+        this.frameworkOntologyAdapter = ontologyFrameworkAdapter;
     }
 
     @Override

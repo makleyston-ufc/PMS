@@ -9,6 +9,9 @@ import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterImpl;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareListenerImpl;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareTechnology;
+import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterImpl;
+import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
+import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 
 public class PMS implements PMSInterface {
 
@@ -17,6 +20,7 @@ public class PMS implements PMSInterface {
     /*Technologies*/
     private MQTTBrokerAdapterTechnology brokerMQTTTechnology = null;
     private IoTMiddlewareTechnology ioTMiddlewareTechnology = null;
+    private OntologyFrameworkTechnology ontologyFrameworkTechnology = null;
 
     private static PMS instance = null;
 
@@ -48,7 +52,7 @@ public class PMS implements PMSInterface {
         this.initBrokerMQTTAdapter(context);
 
         //Init the IoT middleware
-        this.initOntologyFramework();
+        this.initOntologyFramework(context);
 
         //Init the CEP
         this.initCEP();
@@ -60,8 +64,10 @@ public class PMS implements PMSInterface {
         brokerMQTTTechnology.setBrokerAdapter(brokerMQTTAdapter);
     }
 
-    private void initOntologyFramework(){
-
+    private void initOntologyFramework(Context context){
+        OntologyFrameworkAdapterInterface ontologyFrameworkAdapter = new OntologyFrameworkAdapterImpl();
+        ontologyFrameworkTechnology = OntologyFrameworkTechnology.getInstance(context);
+        ontologyFrameworkTechnology.setOntologyFrameworkAdapter(ontologyFrameworkAdapter);
     }
 
     private void initIoTMiddleware(Context context){
