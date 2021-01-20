@@ -10,6 +10,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,4 +36,8 @@ dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     implementation files('libs/cmm_api.jar')
+    implementation 'com.google.android.gms:play-services-awareness:17.1.0'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation files('libs/jena-core-2.7.3.jar')
+    implementation files('libs/xercesImpl-repack.jar')
 }

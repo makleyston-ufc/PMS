@@ -3,8 +3,6 @@ package br.ufc.mdcc.cmu.pmslib.iotmiddleware;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.annotation.CallSuper;
-
 /**
  * Created by makleyston on 14/01/2021.
  */
@@ -25,6 +23,10 @@ public abstract class IoTMiddlewareAdapterInterface{
 
     private Context context;
 
+    public IoTMiddlewareAdapterInterface(Context context){
+        this.context = context;
+    }
+
     public IoTMiddlewareListener getIoTMiddlewareListener() throws IoTMiddlewareException {
         if(ioTMiddlewareListener == null) {
             Log.i(TAG, "IoT middleware listener is misses!");
@@ -37,7 +39,7 @@ public abstract class IoTMiddlewareAdapterInterface{
         this.ioTMiddlewareListener = ioTMiddlewareListener;
     }
 
-    public abstract void onReceiveData(IoTMiddlewareListener ioTMiddlewareListener);
+    //public abstract void onReceiveData(IoTMiddlewareListener ioTMiddlewareListener);
 
     /**
      * This method start the IoT middleware
@@ -57,7 +59,7 @@ public abstract class IoTMiddlewareAdapterInterface{
      */
     public void setListener(IoTMiddlewareListener ioTMiddlewareListener){
         this.ioTMiddlewareListener = ioTMiddlewareListener;
-        this.onReceiveData(ioTMiddlewareListener);
+        //this.onReceiveData(ioTMiddlewareListener);
     }
 
     /**
@@ -65,7 +67,7 @@ public abstract class IoTMiddlewareAdapterInterface{
      * @return ioTMiddlewareListener IoTMiddlewareListener
      */
     public IoTMiddlewareListener getListener(){
-        return this.ioTMiddlewareListener;
+        return (this.ioTMiddlewareListener == null ? new IoTMiddlewareListenerImpl(getContext()) : this.ioTMiddlewareListener);
     }
 
     /**

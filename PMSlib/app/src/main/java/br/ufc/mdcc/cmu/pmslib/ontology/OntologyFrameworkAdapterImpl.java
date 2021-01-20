@@ -3,6 +3,8 @@ package br.ufc.mdcc.cmu.pmslib.ontology;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.File;
+
 import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 
@@ -10,7 +12,9 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
 
     private String TAG = getClass().getName();
 
-    public OntologyFrameworkAdapterImpl() {}
+    public OntologyFrameworkAdapterImpl(Context context) {
+        super(context);
+    }
 
     @Override
     public void loadKnowledge(String path) throws OntologyFrameworkException {
@@ -37,7 +41,14 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
 
     @Override
     public Object semanticAnnotation(SensorInterface sensor) {
-        Log.d(TAG, ">> To do semantic annotation of readed sensor");
+        Log.d(TAG, ">> Semantic annotation of sensor read");
+        //TODO
+        return null;
+    }
+
+    @Override
+    public File getRDF(Object object) {
+        Log.d(TAG, ">> Generate RDF file with Object that references an individual in the Ontology");
         //TODO
         return null;
     }

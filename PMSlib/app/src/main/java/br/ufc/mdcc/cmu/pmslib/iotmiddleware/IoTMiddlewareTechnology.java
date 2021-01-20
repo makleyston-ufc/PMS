@@ -12,15 +12,15 @@ public final class IoTMiddlewareTechnology extends IoTMiddlewareAdapterInterface
 
     private static IoTMiddlewareTechnology instance = null;
 
-    private final String TAG = getClass().getSimpleName();
-
     private IoTMiddlewareAdapterInterface ioTMiddlewareAdapter = null;
 
-    private IoTMiddlewareTechnology(){}
+    private IoTMiddlewareTechnology(Context context){
+        super(context);
+    }
 
     public static IoTMiddlewareTechnology getInstance(Context context){
         if(instance == null){
-            instance = new IoTMiddlewareTechnology();
+            instance = new IoTMiddlewareTechnology(context);
             instance.setContext(context);
         }
         return instance;
@@ -38,11 +38,6 @@ public final class IoTMiddlewareTechnology extends IoTMiddlewareAdapterInterface
 
     public void setIoTMiddlewareAdapter(IoTMiddlewareAdapterInterface ioTMiddlewareAdapter){
         this.ioTMiddlewareAdapter = ioTMiddlewareAdapter;
-    }
-
-    @Override
-    public void onReceiveData(IoTMiddlewareListener ioTMiddlewareListener) {
-        this.ioTMiddlewareAdapter.onReceiveData(ioTMiddlewareListener);
     }
 
     @Override

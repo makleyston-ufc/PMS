@@ -1,9 +1,22 @@
 package br.ufc.mdcc.cmu.pmslib.ontology;
 
+import android.content.Context;
+
+import java.io.File;
+
 import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 
 public abstract class OntologyFrameworkAdapterInterface{
+
+    private Context context = null;
+    public OntologyFrameworkAdapterInterface(Context context){
+        this.context = context;
+    }
+
+    public Context getContext() {
+        return context;
+    }
 
     public abstract void loadKnowledge(String path) throws OntologyFrameworkException;
 
@@ -14,5 +27,7 @@ public abstract class OntologyFrameworkAdapterInterface{
     public abstract void stop() throws OntologyFrameworkException;
 
     public abstract Object semanticAnnotation(SensorInterface sensor);
+
+    public abstract File getRDF(Object object);
 
 }

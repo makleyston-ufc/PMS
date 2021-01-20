@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.CallSuper;
 
+import br.ufc.mdcc.cmu.pmslib.PMS;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 
@@ -14,11 +15,11 @@ import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 public abstract class IoTMiddlewareListener {
 
     private Context context = null;
-    private OntologyFrameworkTechnology ontologyFrameworkTechnology = null;
+    private PMS pms = null;
 
     public IoTMiddlewareListener(Context context){
         this.context = context;
-        this.ontologyFrameworkTechnology = OntologyFrameworkTechnology.getInstance(context);
+        this.pms = PMS.getInstance(context);
     }
 
     /**
@@ -28,7 +29,7 @@ public abstract class IoTMiddlewareListener {
      */
     @CallSuper
     public void onReceiveData(SensorInterface sensor){
-        Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
+        pms.PMSManager(sensor);
 
     }
 
