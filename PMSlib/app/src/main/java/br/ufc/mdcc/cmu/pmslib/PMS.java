@@ -3,22 +3,27 @@ package br.ufc.mdcc.cmu.pmslib;
 import android.content.Context;
 import android.util.Log;
 
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.VCARD;
+
 import br.ufc.mdcc.cmu.pmslib.cep.CEPEventHandler;
 import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
 import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
 import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
 import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
 import br.ufc.mdcc.cmu.pmslib.exception.PMSException;
+import br.ufc.mdcc.cmu.pmslib.iotmiddleware.googleawareness.IoTMiddlewareAdapterImpl;
+import br.ufc.mdcc.cmu.pmslib.iotmiddleware.googleawareness.IoTMiddlewareListenerImpl;
+import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterImpl;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerTechnology;
-import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterImpl;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterInterface;
-import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareListenerImpl;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareTechnology;
-import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterImpl;
+import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTProtocol;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
+import br.ufc.mdcc.cmu.pmslib.ontology.jena.OntologyFrameworkAdapterImpl;
 
 public class PMS implements PMSInterface {
 
@@ -29,6 +34,7 @@ public class PMS implements PMSInterface {
     private IoTMiddlewareTechnology ioTMiddlewareTechnology = null;
     private OntologyFrameworkTechnology ontologyFrameworkTechnology = null;
     private CEPEventHandler cepEventHandler = null;
+    private MQTTProtocol mqttProtocol = null;
 
     private static PMS instance = null;
     private boolean active = false;
@@ -106,7 +112,7 @@ public class PMS implements PMSInterface {
     }
 
     private void initOntologyFramework(Context context) throws OntologyFrameworkException {
-        OntologyFrameworkAdapterInterface ontologyFrameworkAdapter = new OntologyFrameworkAdapterImpl();
+        OntologyFrameworkAdapterInterface ontologyFrameworkAdapter = new OntologyFrameworkAdapterImpl(context);
         ontologyFrameworkTechnology = OntologyFrameworkTechnology.getInstance(context);
         ontologyFrameworkTechnology.setOntologyFrameworkAdapter(ontologyFrameworkAdapter);
 
@@ -115,26 +121,44 @@ public class PMS implements PMSInterface {
     }
 
     private void initIoTMiddleware(Context context) throws IoTMiddlewareException {
-        IoTMiddlewareAdapterInterface ioTMiddlewareAdapter = new IoTMiddlewareAdapterImpl();
+        IoTMiddlewareAdapterInterface ioTMiddlewareAdapter = new IoTMiddlewareAdapterImpl(context);
         ioTMiddlewareTechnology = IoTMiddlewareTechnology.getInstance(context);
         ioTMiddlewareTechnology.setIoTMiddlewareAdapter(ioTMiddlewareAdapter);
 
         IoTMiddlewareListenerImpl ioTMiddlewareListener = new IoTMiddlewareListenerImpl(context);
         ioTMiddlewareTechnology.setListener(ioTMiddlewareListener);
 
-        if(!ioTMiddlewareTechnology.isActive())
+        if(!ioTMiddlewareTechnology.isActive()) {
             ioTMiddlewareTechnology.start();
+            Log.d(TAG, "IoT Middleware: OK!");
+        }
     }
 
     private void initCEP(Context context) throws CEPException {
         cepEventHandler = CEPEventHandler.getInstance(context);
 
-        //TODO: Fazer as classes para o CEP
-        cepEventHandler.addSensorClass(null);
+        //T ODO: To do the CEP classes
+        cepEventHandler.addCEPRuleClass(Resource.class);
 
         if(!cepEventHandler.isActive())
             cepEventHandler.start();
 
+    }
+
+    /*This method receives data from IoT middleware and sends it to CEP handler*/
+    public void PMSManager(SensorInterface sensor){
+        Log.d(TAG, ">> Dados recebidos do IoT Middleware");
+        /*Semantic annotation*/
+        Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
+        /*CEP analizyses*/
+        Log.d(TAG, ">> Dados recebidos do framework de Ontologias"+((Resource) obj).getProperty(VCARD.FN));
+        this.cepEventHandler.eventHandler(obj);
+    }
+
+    /*This method receives data from CEP handler and sends to MQTT Broker*/
+    public void PMSManager(String topic, Object eventMap){
+        mqttProtocol = MQTTProtocol.getInstance(this.context);
+        mqttProtocol.publish(topic+"/"+this.ontologyFrameworkTechnology.getRDF(eventMap));
     }
 
 }

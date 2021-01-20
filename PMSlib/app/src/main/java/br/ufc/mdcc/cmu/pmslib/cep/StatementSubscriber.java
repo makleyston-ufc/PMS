@@ -4,7 +4,11 @@ import android.content.Context;
 
 import androidx.annotation.CallSuper;
 
+import java.util.List;
+
+import br.ufc.mdcc.cmu.pmslib.PMS;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTProtocol;
+import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 
 /**
  * Created by makleyston on 14/01/2021
@@ -12,10 +16,13 @@ import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTProtocol;
 
 public abstract class StatementSubscriber {
     private Context context;
-    private String description;
-    private MQTTProtocol mqttProtocol = null;
+    private PMS pms = null;
+    private List<String> domains;
 
-    public StatementSubscriber(){}
+    public StatementSubscriber(Context context){
+        this.context = context;
+        this.pms = PMS.getInstance(context);
+    }
 
     public void setContext(Context context){this.context = context;}
 
@@ -28,12 +35,12 @@ public abstract class StatementSubscriber {
      */
     public abstract String getStatement();
 
-    public void setDescription(String description){
-        this.description = description;
-    }
-
-    public String getDescription(){
-        return this.description;
+    /**
+     * This method will be
+     * @param topic
+     */
+    public void addDomain(String topic){
+        this.domains.add(topic);
     }
 
     /**
@@ -43,8 +50,9 @@ public abstract class StatementSubscriber {
     @CallSuper
     public void update(Object eventMap){
         if(eventMap != null){
-            mqttProtocol = MQTTProtocol.getInstance(this.context);
-            mqttProtocol.publish(getDescription());
+            for (String topic: domains) {
+                pms.PMSManager(topic, eventMap);
+            }
         }
     }
 }

@@ -7,11 +7,11 @@ import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 import java.util.ArrayList;
 
 import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
-import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 
 /**
  * Created by makleyston on 14/01/2021
@@ -21,7 +21,7 @@ public final class CEPEventHandler {
 
     public static CEPEventHandler instance = null;
     private Context context = null;
-    private ArrayList<Class<SensorInterface>> sensorClassArrayList = new ArrayList<>();
+    private ArrayList<Class<Resource>> CEPRuleClasses = new ArrayList<>();
     private boolean active = false;
     /** Asper service **/
     private EPServiceProvider epService;
@@ -39,10 +39,10 @@ public final class CEPEventHandler {
         return instance;
     }
 
-    public void eventHandle(SensorInterface evt){
-        for (Class<SensorInterface> s: sensorClassArrayList) {
-            if(evt.getClass() == s) {
-                epService.getEPRuntime().sendEvent(evt);
+    public void eventHandler(Object obj){
+        for (Class<Resource> s: CEPRuleClasses) {
+            if(obj.getClass() == s) {
+                epService.getEPRuntime().sendEvent(obj);
             }
         }
     }
@@ -50,7 +50,7 @@ public final class CEPEventHandler {
     public void start() throws CEPException {
         if(this.active) return;
         Configuration cepConfig = new Configuration();
-        for (Class<SensorInterface> s: sensorClassArrayList) {
+        for (Class<Resource> s: CEPRuleClasses) {
             cepConfig.addEventType(s.getSimpleName(), s.getName());
         }
         epService = EPServiceProviderManager.getDefaultProvider(cepConfig);
@@ -80,8 +80,8 @@ public final class CEPEventHandler {
         epService.getEPAdministrator().destroyAllStatements();
     }
 
-    public void addSensorClass(Class<SensorInterface> sensorClass){
-        this.sensorClassArrayList.add(sensorClass);
+    public void addCEPRuleClass(Class<Resource> resourceClass){
+        this.CEPRuleClasses.add(resourceClass);
     }
 
 
