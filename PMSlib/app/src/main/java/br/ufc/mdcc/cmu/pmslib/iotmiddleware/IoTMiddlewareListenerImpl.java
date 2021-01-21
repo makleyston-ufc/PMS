@@ -3,6 +3,8 @@ package br.ufc.mdcc.cmu.pmslib.iotmiddleware;
 import android.content.Context;
 import android.util.Log;
 
+import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
+
 /**
  * Created by makleyston on 14/01/2021.
  */
@@ -17,12 +19,12 @@ public final class IoTMiddlewareListenerImpl extends IoTMiddlewareListener {
     @Override
     public void onReceiveData(SensorInterface sensor) {
         super.onReceiveData(sensor);
-        Log.i(TAG, ">> onReceiveData");
+        Log.i(TAG, ">> onReceiveData | Value: "+sensor.getValue());
     }
 
     @Override
-    public void onSensorDisconnected(String id) {
-        super.onSensorDisconnected(id);
+    public void onSensorDisconnected(SensorInterface sensor) {
+        super.onSensorDisconnected(sensor);
         Log.i(TAG, ">> onSensorDisconnected");
     }
 

@@ -1,8 +1,7 @@
 package br.ufc.mdcc.cmu.pmslib.iotmiddleware;
 
 import android.content.Context;
-
-import androidx.annotation.CallSuper;
+import android.util.Log;
 
 /**
  * Created by makleyston on 14/01/2021.
@@ -16,31 +15,43 @@ import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
  * @version 1.0.0
  */
 
-public abstract class IoTMiddlewareAdapterInterface {
+public abstract class IoTMiddlewareAdapterInterface{
 
     private IoTMiddlewareListener ioTMiddlewareListener = null;
 
+    private final String TAG = getClass().getSimpleName();
+
     private Context context;
 
-    /**
-     * This method is called whenever the IoT middleware to read
-     * data from sensors
-     * @param ioTMiddlewareListener
-     * @throws IoTMiddlewareException
-     */
-    public abstract void receiveData(IoTMiddlewareListener ioTMiddlewareListener) throws IoTMiddlewareException;
+    public IoTMiddlewareAdapterInterface(Context context){
+        this.context = context;
+    }
+
+    public IoTMiddlewareListener getIoTMiddlewareListener() throws IoTMiddlewareException {
+        if(ioTMiddlewareListener == null) {
+            Log.i(TAG, "IoT middleware listener is misses!");
+            throw new IoTMiddlewareException();
+        }else
+            return ioTMiddlewareListener;
+    }
+
+    public void setIoTMiddlewareListener(IoTMiddlewareListener ioTMiddlewareListener) {
+        this.ioTMiddlewareListener = ioTMiddlewareListener;
+    }
+
+    //public abstract void onReceiveData(IoTMiddlewareListener ioTMiddlewareListener);
 
     /**
      * This method start the IoT middleware
      * @throws IoTMiddlewareException
      */
-    public abstract void startIotMiddleware() throws IoTMiddlewareException;
+    public abstract void start() throws IoTMiddlewareException;
 
     /**
      * This method stop the IoT middleware
      * @throws IoTMiddlewareException
      */
-    public abstract void stopIotMiddleware() throws IoTMiddlewareException;
+    public abstract void stop() throws IoTMiddlewareException;
 
     /**
      * Set a listener
@@ -48,6 +59,7 @@ public abstract class IoTMiddlewareAdapterInterface {
      */
     public void setListener(IoTMiddlewareListener ioTMiddlewareListener){
         this.ioTMiddlewareListener = ioTMiddlewareListener;
+        //this.onReceiveData(ioTMiddlewareListener);
     }
 
     /**
@@ -55,7 +67,7 @@ public abstract class IoTMiddlewareAdapterInterface {
      * @return ioTMiddlewareListener IoTMiddlewareListener
      */
     public IoTMiddlewareListener getListener(){
-        return this.ioTMiddlewareListener;
+        return (this.ioTMiddlewareListener == null ? new IoTMiddlewareListenerImpl(getContext()) : this.ioTMiddlewareListener);
     }
 
     /**
@@ -73,5 +85,7 @@ public abstract class IoTMiddlewareAdapterInterface {
     public void setContext(Context context) {
         this.context = context;
     }
+
+    public abstract boolean isActive();
 
 }
