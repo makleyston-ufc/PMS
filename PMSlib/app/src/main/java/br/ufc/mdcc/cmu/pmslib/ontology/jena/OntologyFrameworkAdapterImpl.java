@@ -104,6 +104,7 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
         this.sensor.addProperty(VCARD.N, sensor.getValue().get(0).toString()); //Lat
         this.sensor.addProperty(VCARD.ADR, sensor.getValue().get(1).toString()); //Long
 
+        //this.sensor.getProperty(VCARD.FN).getString();
         //Log.d(TAG, ">> value "+this.sensor.getProperty(VCARD.FN).getString());
         return this.sensor;
     }

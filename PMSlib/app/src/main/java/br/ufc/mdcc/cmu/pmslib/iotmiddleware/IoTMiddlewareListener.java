@@ -6,7 +6,6 @@ import androidx.annotation.CallSuper;
 
 import br.ufc.mdcc.cmu.pmslib.PMS;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
-import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 
 /**
  * Created by makleyston on 14/01/2021
@@ -35,10 +34,11 @@ public abstract class IoTMiddlewareListener {
 
     /**
      * This method is called whenever that a sensor to disconnect
-     * @param id String
+     * @param sensor SensorInterface
      */
     @CallSuper
-    public void onSensorDisconnected(String id){
+    public void onSensorDisconnected(SensorInterface sensor){
+        pms.removeSensorPMS(sensor);
 
     }
 
@@ -49,6 +49,7 @@ public abstract class IoTMiddlewareListener {
      */
     @CallSuper
     public void onSensorDiscovered(SensorInterface sensor){
+        pms.saveSensorPMS(sensor);
 
     }
 

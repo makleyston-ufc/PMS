@@ -21,7 +21,8 @@ public final class CEPEventHandler {
 
     public static CEPEventHandler instance = null;
     private Context context = null;
-    private ArrayList<Class<Resource>> CEPRuleClasses = new ArrayList<>();
+    private ArrayList<Class<Resource>> resourceClasses = new ArrayList<>();
+    private ArrayList<Class<? extends StatementSubscriber>> CEPRuleClasses = new ArrayList<>();
     private boolean active = false;
     /** Asper service **/
     private EPServiceProvider epService;
@@ -40,7 +41,7 @@ public final class CEPEventHandler {
     }
 
     public void eventHandler(Object obj){
-        for (Class<Resource> s: CEPRuleClasses) {
+        for (Class<Resource> s: this.resourceClasses) {
             if(obj.getClass() == s) {
                 epService.getEPRuntime().sendEvent(obj);
             }
@@ -50,7 +51,7 @@ public final class CEPEventHandler {
     public void start() throws CEPException {
         if(this.active) return;
         Configuration cepConfig = new Configuration();
-        for (Class<Resource> s: CEPRuleClasses) {
+        for (Class<Resource> s: this.resourceClasses) {
             cepConfig.addEventType(s.getSimpleName(), s.getName());
         }
         epService = EPServiceProviderManager.getDefaultProvider(cepConfig);
@@ -80,8 +81,12 @@ public final class CEPEventHandler {
         epService.getEPAdministrator().destroyAllStatements();
     }
 
-    public void addCEPRuleClass(Class<Resource> resourceClass){
-        this.CEPRuleClasses.add(resourceClass);
+    public void addCEPRuleClass(Class<? extends StatementSubscriber> stm){
+        this.CEPRuleClasses.add(stm);
+    }
+
+    public void addResourceClass(Class<Resource> resorceClass){
+        this.resourceClasses.add(resorceClass);
     }
 
 

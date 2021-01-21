@@ -6,7 +6,13 @@ import android.util.Log;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.ufc.mdcc.cmu.pmslib.cep.CEPEventHandler;
+import br.ufc.mdcc.cmu.pmslib.cep.StatementSubscriber;
+import br.ufc.mdcc.cmu.pmslib.cep.statements.GPSStatement;
+import br.ufc.mdcc.cmu.pmslib.cep.statements.ResourceStatement;
 import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
 import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
 import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
@@ -35,6 +41,8 @@ public class PMS implements PMSInterface {
     private OntologyFrameworkTechnology ontologyFrameworkTechnology = null;
     private CEPEventHandler cepEventHandler = null;
     private MQTTProtocol mqttProtocol = null;
+
+    private List<Object> activeSensors = new ArrayList<>();
 
     private static PMS instance = null;
     private boolean active = false;
@@ -68,6 +76,11 @@ public class PMS implements PMSInterface {
             Log.i(TAG, "PMS stopped successfully!");
         }else
             Log.i(TAG, "PMS already stopped!");
+    }
+
+    @Override
+    public void addCEPRuleClass(Class<StatementSubscriber> resourceClass) {
+        this.cepEventHandler.addCEPRuleClass(((Class<StatementSubscriber>) resourceClass));
     }
 
     private void init(Context context){
@@ -137,8 +150,12 @@ public class PMS implements PMSInterface {
     private void initCEP(Context context) throws CEPException {
         cepEventHandler = CEPEventHandler.getInstance(context);
 
-        //T ODO: To do the CEP classes
-        cepEventHandler.addCEPRuleClass(Resource.class);
+        /*Adding resource sensor*/
+        cepEventHandler.addResourceClass(Resource.class);
+
+        /*Adding CEP rule*/
+        cepEventHandler.addCEPRuleClass(GPSStatement.class);
+        cepEventHandler.addCEPRuleClass(ResourceStatement.class);
 
         if(!cepEventHandler.isActive())
             cepEventHandler.start();
@@ -147,11 +164,11 @@ public class PMS implements PMSInterface {
 
     /*This method receives data from IoT middleware and sends it to CEP handler*/
     public void PMSManager(SensorInterface sensor){
-        Log.d(TAG, ">> Dados recebidos do IoT Middleware");
+        //Log.d(TAG, ">> Dados recebidos do IoT Middleware");
         /*Semantic annotation*/
         Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
         /*CEP analizyses*/
-        Log.d(TAG, ">> Dados recebidos do framework de Ontologias"+((Resource) obj).getProperty(VCARD.FN));
+        //Log.d(TAG, ">> Dados recebidos do framework de Ontologias"+((Resource) obj).getProperty(VCARD.FN));
         this.cepEventHandler.eventHandler(obj);
     }
 
@@ -161,4 +178,13 @@ public class PMS implements PMSInterface {
         mqttProtocol.publish(topic+"/"+this.ontologyFrameworkTechnology.getRDF(eventMap));
     }
 
+    public void saveSensorPMS(Object sensor){
+        if(!this.activeSensors.contains(sensor))
+            this.activeSensors.add(sensor);
+    }
+
+    public void removeSensorPMS(Object sensor){
+        if(this.activeSensors.contains(sensor))
+            this.activeSensors.remove(sensor);
+    }
 }

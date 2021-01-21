@@ -23,8 +23,8 @@ public final class IoTMiddlewareListenerImpl extends IoTMiddlewareListener {
     }
 
     @Override
-    public void onSensorDisconnected(String id) {
-        super.onSensorDisconnected(id);
+    public void onSensorDisconnected(SensorInterface sensor) {
+        super.onSensorDisconnected(sensor);
         Log.i(TAG, ">> onSensorDisconnected");
     }
 
