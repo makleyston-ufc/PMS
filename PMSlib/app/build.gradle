@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "br.ufc.mdcc.cmu.pmslib"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -20,6 +20,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/io.netty.versions.properties'
     }
 
 }
@@ -46,9 +50,24 @@ dependencies {
     implementation files('libs/xercesImpl-repack.jar')
 
     /*MQTT broker*/
-    implementation 'io.moquette:moquette-netty-parser:0.8.1'
-    implementation 'io.moquette:moquette-broker:0.8.1'
-    implementation 'io.moquette:moquette-parser-commons:0.8.1'
+    implementation project(path: ':broker')
+//    implementation ('io.moquette:moquette-netty-parser:0.9') {
+//        exclude group: 'org.slf4j'
+//    }
+//    implementation ('io.moquette:moquette-broker:0.12.1'){
+//        exclude group: 'org.slf4j'
+//    }
+//    implementation ('io.moquette:moquette-parser-commons:0.8.1') {
+//        exclude group: 'org.slf4j'
+//    }986679716
+
+//    implementation (group: 'io.moquette', name: 'moquette-broker', version: '0.13'){
+//        exclude group: 'org.slf4j'
+//    }
+//
+//    implementation ('com.github.moquette-io:moquette:0.14'){
+//        exclude group: 'org.slf4j'
+//    }
 
     /*MQTT Protocol*/
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'

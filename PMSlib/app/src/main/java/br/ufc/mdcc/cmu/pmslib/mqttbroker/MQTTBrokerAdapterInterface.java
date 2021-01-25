@@ -1,5 +1,7 @@
 package br.ufc.mdcc.cmu.pmslib.mqttbroker;
 
+import android.content.Context;
+
 import androidx.annotation.CallSuper;
 
 import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
@@ -9,6 +11,12 @@ import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
  */
 
 public abstract class MQTTBrokerAdapterInterface {
+
+    private Context context = null;
+
+    public MQTTBrokerAdapterInterface(Context context){
+        this.context = context;
+    }
 
     /**
      * This method is called to start the MQTT broker
@@ -25,5 +33,11 @@ public abstract class MQTTBrokerAdapterInterface {
      * @return boolean [true for active and false for inactive]
      */
     public abstract boolean isActive();
+
+    public abstract void requestPermissions();
+
+    public Context getContext() {
+        return context;
+    }
 
 }

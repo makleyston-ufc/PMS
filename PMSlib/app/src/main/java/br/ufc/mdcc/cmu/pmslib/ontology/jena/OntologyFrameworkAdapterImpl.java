@@ -49,29 +49,6 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
         // add the property
         this.sensor.addProperty(VCARD.FN, sensorType); //I am using FN as a temporary way
 
-        /*Request permission*/
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    (Activity) context,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSION_STORAGE_W
-            );
-            return;
-        }
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    (Activity) context,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSION_STORAGE_R
-            );
-            return;
-        }
     }
 
     @Override
@@ -123,5 +100,32 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void requestPermissions() {
+        /*Request permission*/
+        if (ContextCompat.checkSelfPermission(
+                getContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    (Activity) getContext(),
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSION_STORAGE_W
+            );
+            return;
+        }
+        if (ContextCompat.checkSelfPermission(
+                getContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    (Activity) getContext(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSION_STORAGE_R
+            );
+            return;
+        }
     }
 }

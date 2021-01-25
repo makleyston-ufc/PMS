@@ -85,8 +85,8 @@ public final class CEPEventHandler {
         this.CEPRuleClasses.add(stm);
     }
 
-    public void addResourceClass(Class<Resource> resorceClass){
-        this.resourceClasses.add(resorceClass);
+    public void addResourceClass(Class<Resource> resourceClass){
+        this.resourceClasses.add(resourceClass);
     }
 
 

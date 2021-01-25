@@ -42,6 +42,11 @@ public class PMS implements PMSInterface {
     private CEPEventHandler cepEventHandler = null;
     private MQTTProtocol mqttProtocol = null;
 
+    /*Adapters*/
+    private MQTTBrokerAdapterInterface MQTTBrokerAdapter = null;
+    private OntologyFrameworkAdapterInterface ontologyFrameworkAdapter = null;
+    private IoTMiddlewareAdapterInterface ioTMiddlewareAdapter = null;
+
     private List<Object> activeSensors = new ArrayList<>();
 
     private static PMS instance = null;
@@ -83,6 +88,21 @@ public class PMS implements PMSInterface {
         this.cepEventHandler.addCEPRuleClass(((Class<StatementSubscriber>) resourceClass));
     }
 
+    @Override
+    public void setOntologyFrameworkAdapter(OntologyFrameworkAdapterInterface ontologyFramework) {
+        this.ontologyFrameworkAdapter = ontologyFramework;
+    }
+
+    @Override
+    public void setIoTMiddlewareAdapter(IoTMiddlewareAdapterInterface ioTMiddlewareAdapter) {
+        this.ioTMiddlewareAdapter = ioTMiddlewareAdapter;
+    }
+
+    @Override
+    public void setMQTTBrokerAdapter(MQTTBrokerAdapterInterface mqttBrokerAdapter) {
+        this.MQTTBrokerAdapter = mqttBrokerAdapter;
+    }
+
     private void init(Context context){
         try {
             //Init the IoT middleware
@@ -91,11 +111,12 @@ public class PMS implements PMSInterface {
             //Init the ontology framework
             this.initOntologyFramework(context);
 
+            //Init the CEP
+            this.initCEP(context);
+
             //Init the MQTT Broker
             this.initMQTTBrokerAdapter(context);
 
-            //Init the CEP
-            this.initCEP(context);
 
         } catch (IoTMiddlewareException | OntologyFrameworkException | MQTTBrokerException | CEPException e) {
             e.getMessage();
@@ -116,27 +137,39 @@ public class PMS implements PMSInterface {
     }
 
     private void initMQTTBrokerAdapter(Context context) throws MQTTBrokerException {
-        MQTTBrokerAdapterInterface brokerMQTTAdapter = new MQTTBrokerAdapterImpl();
+        if(this.MQTTBrokerAdapter == null)
+            this.MQTTBrokerAdapter = new MQTTBrokerAdapterImpl(context);
         mqttBrokerTechnology = MQTTBrokerTechnology.getBrokerTechnology(context);
-        mqttBrokerTechnology.setBrokerAdapter(brokerMQTTAdapter);
+        /*Request permissions*/
+        this.MQTTBrokerAdapter.requestPermissions();
+        mqttBrokerTechnology.setBrokerAdapter(this.MQTTBrokerAdapter);
 
         if(!mqttBrokerTechnology.isActive())
             mqttBrokerTechnology.start();
+
+        Log.d(TAG, ">> MQTT Broker initialized successfully!");
     }
 
     private void initOntologyFramework(Context context) throws OntologyFrameworkException {
-        OntologyFrameworkAdapterInterface ontologyFrameworkAdapter = new OntologyFrameworkAdapterImpl(context);
+        if(this.ontologyFrameworkAdapter == null)
+            this.ontologyFrameworkAdapter = new OntologyFrameworkAdapterImpl(context);
         ontologyFrameworkTechnology = OntologyFrameworkTechnology.getInstance(context);
-        ontologyFrameworkTechnology.setOntologyFrameworkAdapter(ontologyFrameworkAdapter);
+        /*Request permissions*/
+        this.ontologyFrameworkAdapter.requestPermissions();
+        ontologyFrameworkTechnology.setOntologyFrameworkAdapter(this.ontologyFrameworkAdapter);
 
         ontologyFrameworkTechnology.loadKnowledge("");
         ontologyFrameworkTechnology.start();
     }
 
     private void initIoTMiddleware(Context context) throws IoTMiddlewareException {
-        IoTMiddlewareAdapterInterface ioTMiddlewareAdapter = new IoTMiddlewareAdapterImpl(context);
+        //IoTMiddlewareAdapterInterface ioTMiddlewareAdapter = new IoTMiddlewareAdapterImpl(context);
+        if(this.ioTMiddlewareAdapter == null)
+            this.ioTMiddlewareAdapter = new IoTMiddlewareAdapterImpl(context);
         ioTMiddlewareTechnology = IoTMiddlewareTechnology.getInstance(context);
-        ioTMiddlewareTechnology.setIoTMiddlewareAdapter(ioTMiddlewareAdapter);
+        /*Request permissions*/
+        this.ioTMiddlewareAdapter.requestPermissions();
+        ioTMiddlewareTechnology.setIoTMiddlewareAdapter(this.ioTMiddlewareAdapter);
 
         IoTMiddlewareListenerImpl ioTMiddlewareListener = new IoTMiddlewareListenerImpl(context);
         ioTMiddlewareTechnology.setListener(ioTMiddlewareListener);
@@ -160,10 +193,12 @@ public class PMS implements PMSInterface {
         if(!cepEventHandler.isActive())
             cepEventHandler.start();
 
+        Log.d(TAG, ">> CEP initialized successfully!");
+
     }
 
     /*This method receives data from IoT middleware and sends it to CEP handler*/
-    protected void PMSManager(SensorInterface sensor){
+    public void PMSManager(SensorInterface sensor){
         //Log.d(TAG, ">> Dados recebidos do IoT Middleware");
         /*Semantic annotation*/
         Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);

@@ -32,20 +32,6 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
 
     public IoTMiddlewareAdapterImpl(Context context){
         super(context);
-
-        /*Request permission*/
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    (Activity) context,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSION_LOCATION
-            );
-            return;
-        }
-
     }
 
     @Override
@@ -65,6 +51,22 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
     @Override
     public boolean isActive() {
         return this.active;
+    }
+
+    @Override
+    public void requestPermissions() {
+        /*Request permission*/
+        if (ContextCompat.checkSelfPermission(
+                getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    (Activity) getContext(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSION_LOCATION
+            );
+            return;
+        }
     }
 
     private void stopSnapshat() {
