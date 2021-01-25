@@ -21,12 +21,12 @@ import br.ufc.mdcc.cmu.pmslib.exception.PMSException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.googleawareness.IoTMiddlewareAdapterImpl;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.googleawareness.IoTMiddlewareListenerImpl;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
-import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterImpl;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerTechnology;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareTechnology;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTProtocol;
+import br.ufc.mdcc.cmu.pmslib.mqttbroker.moquette.MQTTBrokerAdapterImpl;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 import br.ufc.mdcc.cmu.pmslib.ontology.jena.OntologyFrameworkAdapterImpl;
@@ -163,7 +163,7 @@ public class PMS implements PMSInterface {
     }
 
     /*This method receives data from IoT middleware and sends it to CEP handler*/
-    public void PMSManager(SensorInterface sensor){
+    protected void PMSManager(SensorInterface sensor){
         //Log.d(TAG, ">> Dados recebidos do IoT Middleware");
         /*Semantic annotation*/
         Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);

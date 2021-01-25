@@ -32,12 +32,25 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.android.support:multidex:1.0.3'
+
+    /*CEP engine*/
     implementation files('libs/asper-4.9.0.jar')
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
-    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+
+    /*IoT Middleware*/
     implementation files('libs/cmm_api.jar')
     implementation 'com.google.android.gms:play-services-awareness:17.1.0'
-    implementation 'com.android.support:multidex:1.0.3'
+
+    /*Ontology Framework*/
     implementation files('libs/jena-core-2.7.3.jar')
     implementation files('libs/xercesImpl-repack.jar')
+
+    /*MQTT broker*/
+    implementation 'io.moquette:moquette-netty-parser:0.8.1'
+    implementation 'io.moquette:moquette-broker:0.8.1'
+    implementation 'io.moquette:moquette-parser-commons:0.8.1'
+
+    /*MQTT Protocol*/
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
 }
