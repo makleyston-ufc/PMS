@@ -1,11 +1,11 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "br.ufc.mdcc.cmu.pmslib"
+        //applicationId "br.ufc.mdcc.cmu.pmslib"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
