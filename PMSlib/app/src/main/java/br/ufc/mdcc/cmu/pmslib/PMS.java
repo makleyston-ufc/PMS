@@ -3,6 +3,7 @@ package br.ufc.mdcc.cmu.pmslib;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
@@ -88,10 +89,10 @@ public class PMS implements PMSInterface {
         this.cepEventHandler.addCEPRuleClass(((Class<StatementSubscriber>) resourceClass));
     }
 
-    @Override
-    public void setOntologyFrameworkAdapter(OntologyFrameworkAdapterInterface ontologyFramework) {
-        this.ontologyFrameworkAdapter = ontologyFramework;
-    }
+//    @Override
+//    public void setOntologyFrameworkAdapter(OntologyFrameworkAdapterInterface ontologyFramework) {
+//        this.ontologyFrameworkAdapter = ontologyFramework;
+//    }
 
     @Override
     public void setIoTMiddlewareAdapter(IoTMiddlewareAdapterInterface ioTMiddlewareAdapter) {
@@ -151,15 +152,21 @@ public class PMS implements PMSInterface {
     }
 
     private void initOntologyFramework(Context context) throws OntologyFrameworkException {
-        if(this.ontologyFrameworkAdapter == null)
-            this.ontologyFrameworkAdapter = new OntologyFrameworkAdapterImpl(context);
-        ontologyFrameworkTechnology = OntologyFrameworkTechnology.getInstance(context);
-        /*Request permissions*/
-        this.ontologyFrameworkAdapter.requestPermissions();
-        ontologyFrameworkTechnology.setOntologyFrameworkAdapter(this.ontologyFrameworkAdapter);
+        try {
+            if (this.ontologyFrameworkAdapter == null)
+                this.ontologyFrameworkAdapter = new OntologyFrameworkAdapterImpl(context);
+            ontologyFrameworkTechnology = OntologyFrameworkTechnology.getInstance(context);
+            /*Request permissions*/
+            this.ontologyFrameworkAdapter.requestPermissions();
+            ontologyFrameworkTechnology.setOntologyFrameworkAdapter(this.ontologyFrameworkAdapter);
 
-        ontologyFrameworkTechnology.loadKnowledge("");
-        ontologyFrameworkTechnology.start();
+            ontologyFrameworkTechnology.loadKnowledge("");
+            ontologyFrameworkTechnology.start();
+
+            Log.d(TAG, ">> Ontology Framework initialized successfully!");
+        }catch (Exception e){
+            throw new OntologyFrameworkException();
+        }
     }
 
     private void initIoTMiddleware(Context context) throws IoTMiddlewareException {
@@ -176,7 +183,7 @@ public class PMS implements PMSInterface {
 
         if(!ioTMiddlewareTechnology.isActive()) {
             ioTMiddlewareTechnology.start();
-            Log.d(TAG, "IoT Middleware: OK!");
+            Log.d(TAG, ">> IoT Middleware initialized successfully!");
         }
     }
 
@@ -202,6 +209,8 @@ public class PMS implements PMSInterface {
         //Log.d(TAG, ">> Dados recebidos do IoT Middleware");
         /*Semantic annotation*/
         Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
+        Gson gson = new Gson();
+        Log.d(TAG, "*** >> "+gson.toJson(((Resource)obj).getProperty(VCARD.N).getString()));
         /*CEP analizyses*/
         //Log.d(TAG, ">> Dados recebidos do framework de Ontologias"+((Resource) obj).getProperty(VCARD.FN));
         this.cepEventHandler.eventHandler(obj);

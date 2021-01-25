@@ -10,6 +10,7 @@ public class GPSStatement extends StatementSubscriber {
         super(context);
     }
 
+
     @Override
     public String getStatement() {
         String stm = "select * from Resource(id = 'GPS' and lat='30.012' and lng='140.234')";
