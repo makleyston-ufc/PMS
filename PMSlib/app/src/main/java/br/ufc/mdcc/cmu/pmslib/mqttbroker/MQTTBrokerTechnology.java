@@ -30,6 +30,7 @@ public final class MQTTBrokerTechnology extends MQTTBrokerAdapterInterface {
     }
 
     private MQTTBrokerTechnology(Context context){
+        super(context);
         this.context = context;
     }
 
@@ -46,5 +47,10 @@ public final class MQTTBrokerTechnology extends MQTTBrokerAdapterInterface {
     @Override
     public boolean isActive() {
         return this.brokerAdapter.isActive();
+    }
+
+    @Override
+    public void requestPermissions() {
+        this.brokerAdapter.requestPermissions();
     }
 }

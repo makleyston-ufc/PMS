@@ -53,4 +53,9 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
         return null;
     }
 
+    @Override
+    public void requestPermissions() {
+        //TODO
+    }
+
 }

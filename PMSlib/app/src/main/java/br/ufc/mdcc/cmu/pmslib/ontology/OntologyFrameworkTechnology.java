@@ -64,4 +64,9 @@ public final class OntologyFrameworkTechnology extends OntologyFrameworkAdapterI
         return this.ontologyFrameworkAdapter.getRDF(object);
     }
 
+    @Override
+    public void requestPermissions() {
+        this.ontologyFrameworkAdapter.requestPermissions();
+    }
+
 }

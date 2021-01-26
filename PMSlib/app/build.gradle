@@ -1,12 +1,12 @@
+//apply plugin: 'com.android.library'
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 28
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "br.ufc.mdcc.cmu.pmslib"
-        minSdkVersion 16
+        //applicationId "br.ufc.mdcc.cmu.pmslib"
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -21,6 +21,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/io.netty.versions.properties'
+        exclude 'META-INF/DEPENDENCIES'
+    }
 
 }
 
@@ -32,12 +37,25 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'commons-io:commons-io:2.5'
+
+    /*CEP engine*/
     implementation files('libs/asper-4.9.0.jar')
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
-    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+
+    /*IoT Middleware*/
     implementation files('libs/cmm_api.jar')
     implementation 'com.google.android.gms:play-services-awareness:17.1.0'
-    implementation 'com.android.support:multidex:1.0.3'
+
+    /*Ontology Framework*/
     implementation files('libs/jena-core-2.7.3.jar')
     implementation files('libs/xercesImpl-repack.jar')
+    implementation files('libs/jena-iri-0.9.3.jar')
+
+    /*MQTT broker*/
+    implementation project(path: ':broker')
+
+    /*MQTT Protocol*/
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
 }

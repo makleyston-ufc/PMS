@@ -21,7 +21,6 @@ public final class IoTMiddlewareTechnology extends IoTMiddlewareAdapterInterface
     public static IoTMiddlewareTechnology getInstance(Context context){
         if(instance == null){
             instance = new IoTMiddlewareTechnology(context);
-            instance.setContext(context);
         }
         return instance;
     }
@@ -34,6 +33,11 @@ public final class IoTMiddlewareTechnology extends IoTMiddlewareAdapterInterface
     @Override
     public boolean isActive() {
         return this.ioTMiddlewareAdapter.isActive();
+    }
+
+    @Override
+    public void requestPermissions() {
+        this.ioTMiddlewareAdapter.requestPermissions();
     }
 
     public void setIoTMiddlewareAdapter(IoTMiddlewareAdapterInterface ioTMiddlewareAdapter){

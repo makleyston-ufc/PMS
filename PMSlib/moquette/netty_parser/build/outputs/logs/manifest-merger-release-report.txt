@@ -1,0 +1,31 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml:1:1-4:12
+INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml:1:1-4:12
+INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml:1:1-4:12
+INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml:1:1-4:12
+INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml:1:1-4:12
+	package
+		ADDED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml:2:5-42
+		INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+		INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+	android:versionName
+		ADDED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml:3:5-30
+		INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+		INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml:1:11-69
+uses-sdk
+INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+		ADDED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+		INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+		ADDED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml
+		INJECTED from /home/makleyston/AndroidStudioProjects/IoTTV/netty_parser/src/main/AndroidManifest.xml

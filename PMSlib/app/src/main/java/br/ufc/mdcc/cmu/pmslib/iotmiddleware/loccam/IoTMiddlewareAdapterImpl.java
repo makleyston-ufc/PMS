@@ -67,4 +67,9 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
         //TODO
     }
 
+    @Override
+    public void requestPermissions() {
+        //TODO
+    }
+
 }

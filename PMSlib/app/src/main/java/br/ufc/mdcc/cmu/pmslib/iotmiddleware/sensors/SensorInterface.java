@@ -1,5 +1,6 @@
 package br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  */
 public abstract class SensorInterface {
     private String id;
-    private List<Double> value;
+    private List<Double> value = new ArrayList<Double>();
 
     public String getId() {
         return id;

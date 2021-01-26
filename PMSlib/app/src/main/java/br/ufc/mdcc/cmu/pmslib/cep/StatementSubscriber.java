@@ -1,14 +1,14 @@
 package br.ufc.mdcc.cmu.pmslib.cep;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.CallSuper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.ufc.mdcc.cmu.pmslib.PMS;
-import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTProtocol;
-import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 
 /**
  * Created by makleyston on 14/01/2021
@@ -17,7 +17,7 @@ import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 public abstract class StatementSubscriber {
     private Context context;
     private PMS pms = null;
-    private List<String> domains;
+    private List<String> domains = new ArrayList<String>();
 
     public StatementSubscriber(Context context){
         this.context = context;
@@ -35,6 +35,8 @@ public abstract class StatementSubscriber {
      */
     public abstract String getStatement();
 
+    private final String TAG = getClass().getSimpleName();
+
     /**
      * This method will be
      * @param topic
@@ -51,6 +53,7 @@ public abstract class StatementSubscriber {
     public void update(Object eventMap){
         if(eventMap != null){
             for (String topic: domains) {
+                Log.d(TAG, ">> Event found!! "+eventMap.getClass().getSimpleName());
                 pms.PMSManager(topic, eventMap);
             }
         }

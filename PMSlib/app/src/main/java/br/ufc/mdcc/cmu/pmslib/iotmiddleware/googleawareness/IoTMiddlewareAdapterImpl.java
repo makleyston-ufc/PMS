@@ -32,34 +32,33 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
 
     public IoTMiddlewareAdapterImpl(Context context){
         super(context);
+    }
 
-        /*Request permission*/
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    (Activity) context,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSION_LOCATION
-            );
-            return;
+    @Override
+    public void start() throws IoTMiddlewareException {
+        try {
+            startSnapshot();
+            Log.d(TAG, ">> IoT middleware 'Google Awareness' was started successfully!");
+            this.active = true;
+        }catch (Exception e){
+            e.getMessage();
+            e.printStackTrace();
+            throw new IoTMiddlewareException();
         }
 
     }
 
     @Override
-    public void start() throws IoTMiddlewareException {
-        Log.d(TAG, "startIoTMiddleware");
-        startSnapshat();
-        this.active = true;
-    }
-
-    @Override
     public void stop() throws IoTMiddlewareException {
-        Log.d(TAG, "stopIoTMiddleware");
-        stopSnapshat();
-        this.active = false;
+        try{
+            Log.d(TAG, ">> IoT middleware 'Google Awareness' was stopped successfully!");
+            stopSnapshot();
+            this.active = false;
+        }catch (Exception e){
+            e.getMessage();
+            e.printStackTrace();
+            throw new IoTMiddlewareException();
+        }
     }
 
     @Override
@@ -67,12 +66,28 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
         return this.active;
     }
 
-    private void stopSnapshat() {
+    @Override
+    public void requestPermissions() {
+        /*Request permission*/
+        if (ContextCompat.checkSelfPermission(
+                getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    (Activity) getContext(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSION_LOCATION
+            );
+            return;
+        }
+    }
+
+    private void stopSnapshot() {
         //TODO
     }
 
-    private void startSnapshat(){
-        Log.i(TAG, "Actived Snapshot - Google Awareness!");
+    private void startSnapshot(){
+        Log.i(TAG, ">> Snapshot activated successfully - Google Awareness!");
         Awareness.getSnapshotClient(getContext()).getLocation()
                 .addOnSuccessListener(new OnSuccessListener<LocationResponse>() {
                     @Override

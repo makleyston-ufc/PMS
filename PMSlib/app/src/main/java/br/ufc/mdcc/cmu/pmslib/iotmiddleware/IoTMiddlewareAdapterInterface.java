@@ -78,14 +78,16 @@ public abstract class IoTMiddlewareAdapterInterface{
         return context;
     }
 
-    /**
+    /*
      * Set a context
      * @param context Context
      */
-    public void setContext(Context context) {
-        this.context = context;
-    }
+//    public void setContext(Context context) {
+//        this.context = context;
+//    }
 
     public abstract boolean isActive();
+
+    public abstract void requestPermissions();
 
 }

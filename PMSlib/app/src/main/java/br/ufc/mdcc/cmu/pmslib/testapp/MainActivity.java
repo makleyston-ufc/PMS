@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         PMSInterface pms = PMS.getInstance(this);
+
         try {
             pms.start();
         } catch (PMSException e) {

@@ -30,4 +30,6 @@ public abstract class OntologyFrameworkAdapterInterface{
 
     public abstract File getRDF(Object object);
 
+    public abstract void requestPermissions();
+
 }

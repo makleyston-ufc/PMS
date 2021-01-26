@@ -1,0 +1,19 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="org.eclipse.moquette.server"
+4    android:versionName="3.0" >
+5
+6    <uses-sdk android:minSdkVersion="19" />
+6-->/home/makleyston/Projects/PMS/PMSlib/moquette/broker/src/main/AndroidManifest.xml
+7
+8    <uses-permission android:name="android.permission.INTERNET" />
+8-->/home/makleyston/Projects/PMS/PMSlib/moquette/broker/src/main/AndroidManifest.xml:5:5-67
+8-->/home/makleyston/Projects/PMS/PMSlib/moquette/broker/src/main/AndroidManifest.xml:5:22-64
+9    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+9-->/home/makleyston/Projects/PMS/PMSlib/moquette/broker/src/main/AndroidManifest.xml:6:5-81
+9-->/home/makleyston/Projects/PMS/PMSlib/moquette/broker/src/main/AndroidManifest.xml:6:22-78
+10    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+10-->/home/makleyston/Projects/PMS/PMSlib/moquette/broker/src/main/AndroidManifest.xml:7:5-80
+10-->/home/makleyston/Projects/PMS/PMSlib/moquette/broker/src/main/AndroidManifest.xml:7:22-77
+11
+12</manifest>
