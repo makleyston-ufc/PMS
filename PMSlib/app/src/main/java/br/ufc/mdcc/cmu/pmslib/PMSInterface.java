@@ -5,7 +5,6 @@ import br.ufc.mdcc.cmu.pmslib.cep.resources.Resource;
 import br.ufc.mdcc.cmu.pmslib.exception.PMSException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterInterface;
-import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
 
 public interface PMSInterface {
 

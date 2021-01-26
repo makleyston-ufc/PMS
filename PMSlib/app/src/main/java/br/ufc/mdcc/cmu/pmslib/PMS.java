@@ -32,6 +32,10 @@ import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 import br.ufc.mdcc.cmu.pmslib.ontology.jena.OntologyFrameworkAdapterImpl;
 
+/**
+ * Created by makleyston on 14/01/2021
+ */
+
 public class PMS implements PMSInterface {
 
     private Context context = null;
