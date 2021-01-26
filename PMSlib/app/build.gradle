@@ -1,5 +1,5 @@
-apply plugin: 'com.android.library'
-
+//apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     buildToolsVersion "29.0.3"
@@ -24,6 +24,7 @@ android {
     packagingOptions {
         exclude 'META-INF/INDEX.LIST'
         exclude 'META-INF/io.netty.versions.properties'
+        exclude 'META-INF/DEPENDENCIES'
     }
 
 }
@@ -48,6 +49,7 @@ dependencies {
     /*Ontology Framework*/
     implementation files('libs/jena-core-2.7.3.jar')
     implementation files('libs/xercesImpl-repack.jar')
+    implementation files('libs/jena-iri-0.9.3.jar')
 
     /*MQTT broker*/
     implementation project(path: ':broker')
@@ -73,5 +75,5 @@ dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
 
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'commons-io:commons-io:2.5'
 }

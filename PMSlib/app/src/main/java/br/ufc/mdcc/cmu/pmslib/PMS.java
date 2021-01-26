@@ -3,15 +3,17 @@ package br.ufc.mdcc.cmu.pmslib;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.VCARD;
+
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.ufc.mdcc.cmu.pmslib.cep.CEPEventHandler;
 import br.ufc.mdcc.cmu.pmslib.cep.StatementSubscriber;
+import br.ufc.mdcc.cmu.pmslib.cep.resources.GPS;
 import br.ufc.mdcc.cmu.pmslib.cep.statements.GPSStatement;
 import br.ufc.mdcc.cmu.pmslib.cep.statements.ResourceStatement;
 import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
@@ -85,8 +87,8 @@ public class PMS implements PMSInterface {
     }
 
     @Override
-    public void addCEPRuleClass(Class<StatementSubscriber> resourceClass) {
-        this.cepEventHandler.addCEPRuleClass(((Class<StatementSubscriber>) resourceClass));
+    public void addCEPRule(StatementSubscriber resourceClass) {
+        this.cepEventHandler.addCEPRule(((StatementSubscriber) resourceClass));
     }
 
 //    @Override
@@ -145,8 +147,19 @@ public class PMS implements PMSInterface {
         this.MQTTBrokerAdapter.requestPermissions();
         mqttBrokerTechnology.setBrokerAdapter(this.MQTTBrokerAdapter);
 
-        if(!mqttBrokerTechnology.isActive())
+        if(!mqttBrokerTechnology.isActive()) {
             mqttBrokerTechnology.start();
+            try {
+                boolean res = MQTTProtocol.getInstance(context).subscribe("#", null);
+                if(res)
+                    Log.d(TAG, ">> Subscriber ok");
+            } catch (MqttException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         Log.d(TAG, ">> MQTT Broker initialized successfully!");
     }
@@ -191,14 +204,16 @@ public class PMS implements PMSInterface {
         cepEventHandler = CEPEventHandler.getInstance(context);
 
         /*Adding resource sensor*/
-        cepEventHandler.addResourceClass(Resource.class);
+        cepEventHandler.addResourceClass(GPS.class);
 
         /*Adding CEP rule*/
-        cepEventHandler.addCEPRuleClass(GPSStatement.class);
-        cepEventHandler.addCEPRuleClass(ResourceStatement.class);
+        cepEventHandler.addCEPRule(new GPSStatement(context));
+        //cepEventHandler.addCEPRuleClass(ResourceStatement.class);
 
-        if(!cepEventHandler.isActive())
+        if(!cepEventHandler.isActive()) {
             cepEventHandler.start();
+            cepEventHandler.registerEPL();
+        }
 
         Log.d(TAG, ">> CEP initialized successfully!");
 
@@ -209,17 +224,20 @@ public class PMS implements PMSInterface {
         //Log.d(TAG, ">> Dados recebidos do IoT Middleware");
         /*Semantic annotation*/
         Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
-        Gson gson = new Gson();
-        Log.d(TAG, "*** >> "+gson.toJson(((Resource)obj).getProperty(VCARD.N).getString()));
+//        Gson gson = new Gson();
+//        Log.d(TAG, "*** >> "+gson.toJson(((Resource)obj).getProperty(VCARD.N).getString()));
         /*CEP analizyses*/
         //Log.d(TAG, ">> Dados recebidos do framework de Ontologias"+((Resource) obj).getProperty(VCARD.FN));
-        this.cepEventHandler.eventHandler(obj);
+        GPS gps = new GPS();
+        gps.setLat(((Resource)obj).getProperty(VCARD.N).getString());
+        gps.setLng(((Resource)obj).getProperty(VCARD.ADR).getString());
+        this.cepEventHandler.eventHandler(gps);
     }
 
     /*This method receives data from CEP handler and sends to MQTT Broker*/
     public void PMSManager(String topic, Object eventMap){
         mqttProtocol = MQTTProtocol.getInstance(this.context);
-        mqttProtocol.publish(topic+"/"+this.ontologyFrameworkTechnology.getRDF(eventMap));
+        mqttProtocol.publish(topic, null, this.ontologyFrameworkTechnology.getRDF(eventMap));
     }
 
     public void saveSensorPMS(Object sensor){
@@ -231,4 +249,5 @@ public class PMS implements PMSInterface {
         if(this.activeSensors.contains(sensor))
             this.activeSensors.remove(sensor);
     }
+
 }

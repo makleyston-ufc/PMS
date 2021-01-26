@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
@@ -15,11 +16,16 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 
 import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapterInterface {
 
@@ -27,14 +33,13 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
     private final int MY_PERMISSION_STORAGE_W = 222;
     private final int MY_PERMISSION_STORAGE_R = 333;
     private Resource sensor = null;
-    private File file = null;
 
     private Model model = null;
 
     public OntologyFrameworkAdapterImpl(Context context) {
         super(context);
 
-        this.file = new File(getContext().getFilesDir(), "RDF");
+        //this.file = new File(getContext().getFilesDir(), "RDF");
 
         // some definitions
         String sensorURI    = "http://health/sensor";
@@ -88,18 +93,35 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
 
     @Override
     public File getRDF(Object object) {
-        Log.d(TAG, ">> RDF file OK!");
-
-        if (!file.exists()) {
-            file.mkdir();
-        }
+        File file = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "model.ref");
         try {
-            FileWriter writer = new FileWriter(file);
-            model.write(writer);
-        } catch (Exception e) {
+
+            file.createNewFile();
+            if(file.exists())
+            {
+                FileWriter writer = new FileWriter(file);
+                model.write(writer);
+                writer.close();
+//            OutputStream fo = new FileOutputStream(file);
+//            fo.write(data1);
+//            fo.close();
+                System.out.println("file created: "+file);
+                Log.d(TAG, ">> RDF file OK!");
+
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        //byte[] data1={1,1,0,0};
+//write the bytes in file
+
+
+//deleting the file
+//        file.delete();
+//        System.out.println("file deleted");
+
+
+        return file;
     }
 
     @Override

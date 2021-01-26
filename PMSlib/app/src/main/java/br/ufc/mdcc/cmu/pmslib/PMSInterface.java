@@ -12,7 +12,7 @@ public interface PMSInterface {
 
     public void start() throws PMSException;
     public void stop() throws PMSException;
-    public void addCEPRuleClass(Class<StatementSubscriber> resourceClass);
+    public void addCEPRule(StatementSubscriber resourceClass);
     //public void setOntologyFrameworkAdapter(OntologyFrameworkAdapterInterface ontologyFramework);
     public void setIoTMiddlewareAdapter(IoTMiddlewareAdapterInterface ioTMiddlewareAdapter);
     public void setMQTTBrokerAdapter(MQTTBrokerAdapterInterface mqttBrokerAdapter);
