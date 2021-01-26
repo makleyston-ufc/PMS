@@ -13,23 +13,20 @@ import androidx.core.content.ContextCompat;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 
 import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapterInterface {
 
-    private String TAG = getClass().getName();
+    private String TAG = getClass().getSimpleName();
     private final int MY_PERMISSION_STORAGE_W = 222;
     private final int MY_PERMISSION_STORAGE_R = 333;
     private Resource sensor = null;
@@ -38,8 +35,6 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
 
     public OntologyFrameworkAdapterImpl(Context context) {
         super(context);
-
-        //this.file = new File(getContext().getFilesDir(), "RDF");
 
         // some definitions
         String sensorURI    = "http://health/sensor";
@@ -58,25 +53,25 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
 
     @Override
     public void loadKnowledge(String path) throws OntologyFrameworkException {
-        Log.d(TAG, ">> loadKnowledge string");
+        Log.d(TAG, ">> TODO: load knowledge String-based");
         //TODO
     }
 
     @Override
     public void loadKnowledge(Object obg) throws OntologyFrameworkException {
-        Log.d(TAG, ">> loadKnowledge obj");
+        Log.d(TAG, ">> TODO: load knowledge Object-based");
         //TODO
     }
 
     @Override
     public void start() {
-        Log.d(TAG, ">> start ontology framework");
+        Log.d(TAG, ">> TODO: Start ontology framework impl. Jena");
         //TODO
     }
 
     @Override
     public void stop() {
-        Log.d(TAG, ">> stop ontology framework");
+        Log.d(TAG, ">> TODO: Stop ontology framework impl. Jena");
     }
 
     @Override
@@ -84,10 +79,7 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
         this.sensor.addProperty(VCARD.N, sensor.getValue().get(0).toString()); //Lat
         this.sensor.addProperty(VCARD.ADR, sensor.getValue().get(1).toString()); //Long
 
-        //this.sensor.getProperty(VCARD.FN).getString();
-        //Log.d(TAG, ">> value "+this.sensor.getProperty(VCARD.FN).getString());
-
-        Log.d(TAG, ">> Semantic annotation OK!");
+        Log.d(TAG, ">> Semantic annotation finished successfully!");
         return this.sensor;
     }
 
@@ -102,24 +94,12 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
                 FileWriter writer = new FileWriter(file);
                 model.write(writer);
                 writer.close();
-//            OutputStream fo = new FileOutputStream(file);
-//            fo.write(data1);
-//            fo.close();
-                System.out.println("file created: "+file);
-                Log.d(TAG, ">> RDF file OK!");
 
+                Log.d(TAG, ">> RDF file created successfully!");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //byte[] data1={1,1,0,0};
-//write the bytes in file
-
-
-//deleting the file
-//        file.delete();
-//        System.out.println("file deleted");
-
 
         return file;
     }

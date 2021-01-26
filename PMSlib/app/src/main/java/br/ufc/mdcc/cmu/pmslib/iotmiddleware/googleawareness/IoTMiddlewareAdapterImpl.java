@@ -38,7 +38,7 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
     public void start() throws IoTMiddlewareException {
         try {
             startSnapshot();
-            Log.d(TAG, "IoT middleware 'Google Awareness' was started successfully!");
+            Log.d(TAG, ">> IoT middleware 'Google Awareness' was started successfully!");
             this.active = true;
         }catch (Exception e){
             e.getMessage();
@@ -51,7 +51,7 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
     @Override
     public void stop() throws IoTMiddlewareException {
         try{
-            Log.d(TAG, "IoT middleware 'Google Awareness' was stopped successfully!");
+            Log.d(TAG, ">> IoT middleware 'Google Awareness' was stopped successfully!");
             stopSnapshot();
             this.active = false;
         }catch (Exception e){
@@ -87,7 +87,7 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
     }
 
     private void startSnapshot(){
-        Log.i(TAG, "Actived Snapshot - Google Awareness!");
+        Log.i(TAG, ">> Snapshot activated successfully - Google Awareness!");
         Awareness.getSnapshotClient(getContext()).getLocation()
                 .addOnSuccessListener(new OnSuccessListener<LocationResponse>() {
                     @Override

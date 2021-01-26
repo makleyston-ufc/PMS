@@ -37,17 +37,12 @@ public class MQTTProtocol {
         return instance;
     }
 
-    public void publish(File file){
-        //this.publish(null, "192.168.1.67", file);
-    }
-
     private String getURI(String host){
         return "tcp://"+host+":1883";
     }
 
     public void publish(String topic, String host, File file){
-        Log.d(TAG, ">> Here! "+file.toString());
-        host = "localhost";
+        if((host == null) || (host.equals(""))) host = "localhost";
 
         MqttClient client;
         try {
@@ -96,7 +91,6 @@ public class MQTTProtocol {
         return client.isConnected();
     }
 
-
     private class SubscriberClientCallback implements MqttCallback {
         private CountDownLatch m_latch = new CountDownLatch(1);
 
@@ -111,7 +105,7 @@ public class MQTTProtocol {
 
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
-            Log.d(TAG, ">> Mensagem recebida: "+message.toString()+" no tópico "+topic);
+            Log.d(TAG, ">> Received message: "+message.toString()+" on topic "+topic);
         }
 
         @Override

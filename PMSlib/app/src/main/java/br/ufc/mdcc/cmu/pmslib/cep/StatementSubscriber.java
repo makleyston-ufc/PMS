@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufc.mdcc.cmu.pmslib.PMS;
-import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTProtocol;
-import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 
 /**
  * Created by makleyston on 14/01/2021
@@ -55,7 +53,7 @@ public abstract class StatementSubscriber {
     public void update(Object eventMap){
         if(eventMap != null){
             for (String topic: domains) {
-                Log.d(TAG, ">> evento encontrado!! "+eventMap.getClass().getSimpleName());
+                Log.d(TAG, ">> Event found!! "+eventMap.getClass().getSimpleName());
                 pms.PMSManager(topic, eventMap);
             }
         }

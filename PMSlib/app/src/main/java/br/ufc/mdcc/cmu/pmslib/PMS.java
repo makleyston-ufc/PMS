@@ -3,7 +3,6 @@ package br.ufc.mdcc.cmu.pmslib;
 import android.content.Context;
 import android.util.Log;
 
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -15,7 +14,6 @@ import br.ufc.mdcc.cmu.pmslib.cep.CEPEventHandler;
 import br.ufc.mdcc.cmu.pmslib.cep.StatementSubscriber;
 import br.ufc.mdcc.cmu.pmslib.cep.resources.GPS;
 import br.ufc.mdcc.cmu.pmslib.cep.statements.GPSStatement;
-import br.ufc.mdcc.cmu.pmslib.cep.statements.ResourceStatement;
 import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
 import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
 import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
@@ -120,7 +118,6 @@ public class PMS implements PMSInterface {
             //Init the MQTT Broker
             this.initMQTTBrokerAdapter(context);
 
-
         } catch (IoTMiddlewareException | OntologyFrameworkException | MQTTBrokerException | CEPException e) {
             e.getMessage();
             e.printStackTrace();
@@ -140,28 +137,31 @@ public class PMS implements PMSInterface {
     }
 
     private void initMQTTBrokerAdapter(Context context) throws MQTTBrokerException {
+
         if(this.MQTTBrokerAdapter == null)
             this.MQTTBrokerAdapter = new MQTTBrokerAdapterImpl(context);
+
         mqttBrokerTechnology = MQTTBrokerTechnology.getBrokerTechnology(context);
+
         /*Request permissions*/
         this.MQTTBrokerAdapter.requestPermissions();
+
         mqttBrokerTechnology.setBrokerAdapter(this.MQTTBrokerAdapter);
 
         if(!mqttBrokerTechnology.isActive()) {
             mqttBrokerTechnology.start();
+            Log.d(TAG, ">> MQTT Broker initialized successfully!");
+
             try {
                 boolean res = MQTTProtocol.getInstance(context).subscribe("#", null);
                 if(res)
-                    Log.d(TAG, ">> Subscriber ok");
+                    Log.d(TAG, ">> Subscribe in the topic '#': OK");
             } catch (MqttException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
-
-        Log.d(TAG, ">> MQTT Broker initialized successfully!");
     }
 
     private void initOntologyFramework(Context context) throws OntologyFrameworkException {
@@ -169,6 +169,7 @@ public class PMS implements PMSInterface {
             if (this.ontologyFrameworkAdapter == null)
                 this.ontologyFrameworkAdapter = new OntologyFrameworkAdapterImpl(context);
             ontologyFrameworkTechnology = OntologyFrameworkTechnology.getInstance(context);
+
             /*Request permissions*/
             this.ontologyFrameworkAdapter.requestPermissions();
             ontologyFrameworkTechnology.setOntologyFrameworkAdapter(this.ontologyFrameworkAdapter);
@@ -183,10 +184,11 @@ public class PMS implements PMSInterface {
     }
 
     private void initIoTMiddleware(Context context) throws IoTMiddlewareException {
-        //IoTMiddlewareAdapterInterface ioTMiddlewareAdapter = new IoTMiddlewareAdapterImpl(context);
+
         if(this.ioTMiddlewareAdapter == null)
             this.ioTMiddlewareAdapter = new IoTMiddlewareAdapterImpl(context);
         ioTMiddlewareTechnology = IoTMiddlewareTechnology.getInstance(context);
+
         /*Request permissions*/
         this.ioTMiddlewareAdapter.requestPermissions();
         ioTMiddlewareTechnology.setIoTMiddlewareAdapter(this.ioTMiddlewareAdapter);
@@ -208,7 +210,6 @@ public class PMS implements PMSInterface {
 
         /*Adding CEP rule*/
         cepEventHandler.addCEPRule(new GPSStatement(context));
-        //cepEventHandler.addCEPRuleClass(ResourceStatement.class);
 
         if(!cepEventHandler.isActive()) {
             cepEventHandler.start();
@@ -216,21 +217,15 @@ public class PMS implements PMSInterface {
         }
 
         Log.d(TAG, ">> CEP initialized successfully!");
-
     }
 
     /*This method receives data from IoT middleware and sends it to CEP handler*/
     public void PMSManager(SensorInterface sensor){
-        //Log.d(TAG, ">> Dados recebidos do IoT Middleware");
         /*Semantic annotation*/
         Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
-//        Gson gson = new Gson();
-//        Log.d(TAG, "*** >> "+gson.toJson(((Resource)obj).getProperty(VCARD.N).getString()));
-        /*CEP analizyses*/
-        //Log.d(TAG, ">> Dados recebidos do framework de Ontologias"+((Resource) obj).getProperty(VCARD.FN));
         GPS gps = new GPS();
-        gps.setLat(((Resource)obj).getProperty(VCARD.N).getString());
-        gps.setLng(((Resource)obj).getProperty(VCARD.ADR).getString());
+        gps.setLat(((com.hp.hpl.jena.rdf.model.Resource)obj).getProperty(VCARD.N).getString());
+        gps.setLng(((com.hp.hpl.jena.rdf.model.Resource)obj).getProperty(VCARD.ADR).getString());
         this.cepEventHandler.eventHandler(gps);
     }
 
@@ -248,6 +243,11 @@ public class PMS implements PMSInterface {
     public void removeSensorPMS(Object sensor){
         if(this.activeSensors.contains(sensor))
             this.activeSensors.remove(sensor);
+    }
+
+    @Override
+    public void addCEPResourceClass(Class<? extends br.ufc.mdcc.cmu.pmslib.cep.resources.Resource> cls){
+        this.addCEPResourceClass(cls);
     }
 
 }

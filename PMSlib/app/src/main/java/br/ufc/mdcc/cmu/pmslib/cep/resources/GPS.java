@@ -1,6 +1,6 @@
 package br.ufc.mdcc.cmu.pmslib.cep.resources;
 
-public class GPS extends Resource{
+public class GPS extends Resource {
 
     public String lat;
     public String lng;

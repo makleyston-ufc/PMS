@@ -1,7 +1,6 @@
 package br.ufc.mdcc.cmu.pmslib.cep.statements;
 
 import android.content.Context;
-import android.util.Log;
 
 import br.ufc.mdcc.cmu.pmslib.cep.StatementSubscriber;
 
@@ -15,12 +14,10 @@ public class GPSStatement extends StatementSubscriber {
 
     @Override
     public String getStatement() {
-        String stm = "select * from GPS(lat='-3.7710668')";
+        String stm = "select * from GPS(lat='-3.7710616')";
+//        String stm = "select * from Sensor(id='GPS' value[0]='-3.7710668')";
+
         return stm;
     }
 
-    @Override
-    public void update(Object eventMap) {
-        super.update(eventMap);
-    }
 }
