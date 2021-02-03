@@ -227,9 +227,8 @@ public class PMS implements PMSInterface {
     public void PMSManager(SensorInterface sensor){
         /*Semantic annotation*/
         Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
-        GPS gps = new GPS();
-        gps.setLat(((com.hp.hpl.jena.rdf.model.Resource)obj).getProperty(VCARD.N).getString());
-        gps.setLng(((com.hp.hpl.jena.rdf.model.Resource)obj).getProperty(VCARD.ADR).getString());
+        GPS gps = new GPS((com.hp.hpl.jena.rdf.model.Resource) obj);
+
         this.cepEventHandler.eventHandler(gps);
     }
 
