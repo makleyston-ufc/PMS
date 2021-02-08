@@ -1,7 +1,7 @@
 package br.ufc.mdcc.cmu.pmslib;
 
 import br.ufc.mdcc.cmu.pmslib.cep.StatementSubscriber;
-import br.ufc.mdcc.cmu.pmslib.cep.resources.Resource;
+import br.ufc.mdcc.cmu.pmslib.cep.CEPResource;
 import br.ufc.mdcc.cmu.pmslib.exception.PMSException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterInterface;
@@ -29,7 +29,7 @@ public interface PMSInterface {
     public void addCEPRule(StatementSubscriber resourceClass);
 
 
-    public void addCEPResourceClass(Class<? extends Resource> cls);
+    public void addCEPResourceClass(Class<? extends CEPResource> cls);
 
     //public void setOntologyFrameworkAdapter(OntologyFrameworkAdapterInterface ontologyFramework);
 

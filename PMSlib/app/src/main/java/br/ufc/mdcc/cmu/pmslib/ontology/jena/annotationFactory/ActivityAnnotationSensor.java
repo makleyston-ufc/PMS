@@ -1,15 +1,21 @@
-package com.example.testanotationontology;
+package br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 
-public class AtividadeAnnotation implements TypeSensoresAnnotation{
+import java.io.File;
+
+import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
+
+public class ActivityAnnotationSensor implements SensorTypeAnnotation {
     SensorInterface sensor;
     String type;
     GenericAnnotation annotation = new GenericAnnotation();
-    public AtividadeAnnotation(SensorInterface sensor){
+
+    public ActivityAnnotationSensor(SensorInterface sensor){
         this.sensor = sensor;
     }
+
     @Override
     public OntModel sensorAnnotation() {
         annotation.createPrefix("iot-lite", "http://purl.oclc.org/NET/UNIS/fiware/iot-lite/");
@@ -46,17 +52,17 @@ public class AtividadeAnnotation implements TypeSensoresAnnotation{
                 break;
         }
 
-        metadata =annotation.anotationDataProperty(metadata,"iot-lite",
+        metadata =annotation.annotationDataProperty(metadata,"iot-lite",
                 "Metadatatype",type);
-        metadata=annotation.anotationDataProperty(metadata,"iot-lite",
+        metadata=annotation.annotationDataProperty(metadata,"iot-lite",
                 "Metavalue",num);
-        sensorAnot=annotation.anotationObjectyProperty("iot-lite",sensorAnot, metadata, "hasMetadata");
+        sensorAnot=annotation.annotationObjectProperty("iot-lite",sensorAnot, metadata, "hasMetadata");
 
         return annotation.returnModel();
     }
 
     @Override
-    public void writeRDF(OntModel model) {
-        annotation.writeRdf(model);
+    public File writeRDF(OntModel model) {
+        return annotation.writeRdf(model);
     }
 }

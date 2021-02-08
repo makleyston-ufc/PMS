@@ -1,17 +1,16 @@
-package com.example.testanotationontology;
+package br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory;
 
-import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
 
-public class LocalizationAnnotation implements TypeSensoresAnnotation{
+import java.io.File;
+
+import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
+
+public class LocalizationAnnotationSensor implements SensorTypeAnnotation {
     SensorInterface sensor;
     GenericAnnotation annotation = new GenericAnnotation();
-    public LocalizationAnnotation(SensorInterface sensor){
+    public LocalizationAnnotationSensor(SensorInterface sensor){
         this.sensor = sensor;
     }
     public OntModel sensorAnnotation(){
@@ -22,16 +21,16 @@ public class LocalizationAnnotation implements TypeSensoresAnnotation{
                 "Sensor", "iot-lite", sensor.getId());
         Individual point= annotation.createIndividual("geo", "Point",
                 "Location-"+this.sensor.getId());
-        point =annotation.anotationDataProperty(point,"geo",
+        point =annotation.annotationDataProperty(point,"geo",
                 "lat",this.sensor.getValue().get(0));
-        point =annotation.anotationDataProperty(point,"geo",
+        point =annotation.annotationDataProperty(point,"geo",
                 "long",this.sensor.getValue().get(1));
-        sensorAnot=annotation.anotationObjectyProperty("geo",sensorAnot, point, "location");
+        sensorAnot=annotation.annotationObjectProperty("geo",sensorAnot, point, "location");
 
         return annotation.returnModel();
     }
-    public void writeRDF(OntModel model){
-        annotation.writeRdf(model);
+    public File writeRDF(OntModel model){
+        return annotation.writeRdf(model);
     }
     //propriedade iot-lite http://purl.oclc.org/NET/UNIS/fiware/iot-lite
     //proprieda geo http://www.w3.org/2003/01/geo/wgs84_pos

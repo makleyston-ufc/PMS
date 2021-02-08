@@ -33,12 +33,12 @@ public final class OntologyFrameworkAdapterImplOld extends OntologyFrameworkAdap
 
     private Model model = null;
 
-    public OntologyFrameworkAdapterImpl(Context context) {
+    public OntologyFrameworkAdapterImplOld(Context context) {
         super(context);
 
         // some definitions
         String sensorURI    = "http://health/sensor";
-        String sensorType   = "GPS"; //Search in ontology the value sensor.getId();
+        String sensorType   = "GPSCEPResource"; //Search in ontology the value sensor.getId();
 
         // create an empty Model
         this.model = ModelFactory.createDefaultModel();

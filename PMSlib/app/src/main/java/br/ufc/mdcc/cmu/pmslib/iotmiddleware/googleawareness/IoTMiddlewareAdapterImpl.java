@@ -99,7 +99,7 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
                             values.add(locationResponse.getLocation().getLatitude());
                             values.add(locationResponse.getLocation().getLongitude());
                             sensor.setValue(values);
-                            sensor.setId("GPS");
+                            sensor.setId("GPSCEPResource");
 
                             getIoTMiddlewareListener().onReceiveData(sensor);
                         } catch (IoTMiddlewareException e) {

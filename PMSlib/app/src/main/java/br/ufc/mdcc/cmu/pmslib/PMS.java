@@ -3,8 +3,6 @@ package br.ufc.mdcc.cmu.pmslib;
 import android.content.Context;
 import android.util.Log;
 
-import com.hp.hpl.jena.vocabulary.VCARD;
-
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.ArrayList;
@@ -12,7 +10,8 @@ import java.util.List;
 
 import br.ufc.mdcc.cmu.pmslib.cep.CEPEventHandler;
 import br.ufc.mdcc.cmu.pmslib.cep.StatementSubscriber;
-import br.ufc.mdcc.cmu.pmslib.cep.resources.GPS;
+import br.ufc.mdcc.cmu.pmslib.cep.CEPResource;
+import br.ufc.mdcc.cmu.pmslib.cep.resources.GPSCEPResource;
 import br.ufc.mdcc.cmu.pmslib.cep.statements.GPSStatement;
 import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
 import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
@@ -209,11 +208,14 @@ public class PMS implements PMSInterface {
     private void initCEP(Context context) throws CEPException {
         cepEventHandler = CEPEventHandler.getInstance(context);
 
+        /*Adding CEP resource*/
+        cepEventHandler.addCEPResource(new GPSCEPResource(null, context));
+
         /*Adding resource sensor*/
-        cepEventHandler.addResourceClass(GPS.class);
+//        cepEventHandler.addResourceClass(GPSCEPResource.class);
 
         /*Adding CEP rule*/
-        cepEventHandler.addCEPRule(new GPSStatement(context));
+//        cepEventHandler.addCEPRule(new GPSStatement(context));
 
         if(!cepEventHandler.isActive()) {
             cepEventHandler.start();
@@ -227,9 +229,9 @@ public class PMS implements PMSInterface {
     public void PMSManager(SensorInterface sensor){
         /*Semantic annotation*/
         Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
-        GPS gps = new GPS((com.hp.hpl.jena.rdf.model.Resource) obj);
+        GPSCEPResource GPSCEPResource = new GPSCEPResource((com.hp.hpl.jena.rdf.model.Resource) obj);
 
-        this.cepEventHandler.eventHandler(gps);
+        this.cepEventHandler.eventHandler(GPSCEPResource);
     }
 
     /*This method receives data from CEP handler and sends to MQTT Broker*/
@@ -249,7 +251,7 @@ public class PMS implements PMSInterface {
     }
 
     @Override
-    public void addCEPResourceClass(Class<? extends br.ufc.mdcc.cmu.pmslib.cep.resources.Resource> cls){
+    public void addCEPResourceClass(Class<? extends CEPResource> cls){
         this.addCEPResourceClass(cls);
     }
 

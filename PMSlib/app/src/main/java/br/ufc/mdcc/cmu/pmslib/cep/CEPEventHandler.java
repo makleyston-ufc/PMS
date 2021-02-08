@@ -10,7 +10,6 @@ import com.espertech.esper.client.EPStatement;
 
 import java.util.ArrayList;
 
-import br.ufc.mdcc.cmu.pmslib.cep.resources.Resource;
 import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
 
 /**
@@ -21,8 +20,8 @@ public final class CEPEventHandler {
 
     public static CEPEventHandler instance = null;
     private Context context = null;
-    private ArrayList<Class<? extends Resource>> resourceClasses = new ArrayList<>();
-    private ArrayList<StatementSubscriber> CEPRuleClasses = new ArrayList<>();
+    private ArrayList<Class<? extends CEPResource>> resourceClasses = new ArrayList<>();
+    private ArrayList<CEPResource> CEPRuleClasses = new ArrayList<>();
     private boolean active = false;
 
     /** Asper service **/
@@ -42,7 +41,7 @@ public final class CEPEventHandler {
     }
 
     public void eventHandler(Object obj){
-        for (Class<? extends Resource> s: this.resourceClasses) {
+        for (Class<? extends CEPResource> s: this.resourceClasses) {
             if(obj.getClass() == s) {
                 epService.getEPRuntime().sendEvent(obj);
             }
@@ -52,7 +51,7 @@ public final class CEPEventHandler {
     public void start() throws CEPException {
         if(this.active) return;
         Configuration cepConfig = new Configuration();
-        for (Class<? extends Resource> s: this.resourceClasses) {
+        for (Class<? extends CEPResource> s: this.resourceClasses) {
             cepConfig.addEventType(s.getSimpleName(), s.getName());
         }
         epService = EPServiceProviderManager.getDefaultProvider(cepConfig);
@@ -81,16 +80,16 @@ public final class CEPEventHandler {
         epService.getEPAdministrator().destroyAllStatements();
     }
 
-    public void addCEPRule(StatementSubscriber stm){
+    private void addCEPRule(CEPResource stm){
         this.CEPRuleClasses.add(stm);
     }
 
-    public void addResourceClass(Class<? extends Resource> resourceClass){
+    private void addResourceClass(Class<? extends CEPResource> resourceClass){
         this.resourceClasses.add(resourceClass);
     }
 
     public void registerEPL() {
-        for (StatementSubscriber stmSb : CEPRuleClasses) {
+        for (CEPResource stmSb : CEPRuleClasses) {
             try {
                 epStatement = epService.getEPAdministrator().createEPL(stmSb.getStatement());
                 epStatement.setSubscriber(stmSb);
@@ -98,6 +97,11 @@ public final class CEPEventHandler {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void addCEPResource(CEPResource cls){
+        addCEPRule(cls);
+        addResourceClass(cls.getClass());
     }
 
     public boolean isActive() {

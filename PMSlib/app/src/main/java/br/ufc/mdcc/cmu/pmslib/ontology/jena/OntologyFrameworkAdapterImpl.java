@@ -1,12 +1,18 @@
-package br.ufc.mdcc.cmu.pmslib.ontology;
+package br.ufc.mdcc.cmu.pmslib.ontology.jena;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.hp.hpl.jena.ontology.OntModel;
 
 import java.io.File;
 
 import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
+import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
+import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.ActivityAnnotationSensor;
+import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.GenericAnnotation;
+import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.LocalizationAnnotationSensor;
 
 public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapterInterface {
 
@@ -19,7 +25,7 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
     @Override
     public void loadKnowledge(String path) throws OntologyFrameworkException {
         Log.d(TAG, ">> loadKnowledge string");
-        //TODOl
+        //TODO
     }
 
     @Override
@@ -42,19 +48,20 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
     public Object semanticAnnotation(SensorInterface sensor) {
         Log.d(TAG, ">> Semantic annotation of sensor read");
         if(sensor.getId()=="LocalizationSensor"){
-            LocalizationAnnotation sensorLocalizacao =new LocalizationAnnotation(sensor);
-            return sensorLocalizacao.sensorAnnotation();
-        }else if(sensor.getId()=="ActivitySensor")
-            ActivityAnnotation sensorActivity =new ActivityAnnotation(act);
+            LocalizationAnnotationSensor localizationSensor =new LocalizationAnnotationSensor(sensor);
+            return localizationSensor.sensorAnnotation();
+        }else if(sensor.getId()=="ActivitySensor") {
+            ActivityAnnotationSensor sensorActivity = new ActivityAnnotationSensor(sensor);
             return sensorActivity.sensorAnnotation();
-
+        }
+        return null;
     }
 
     @Override
     public File getRDF(Object object) {
         Log.d(TAG, ">> Generate RDF file with Object that references an individual in the Ontology");
-        GenericAnnotation gen = GenericAnnotation();
-        return gen.writeRdf(object);
+        GenericAnnotation gen = new GenericAnnotation();
+        return gen.writeRdf((OntModel) object);
 
     }
 

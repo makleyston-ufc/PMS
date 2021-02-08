@@ -14,8 +14,8 @@ public class GPSStatement extends StatementSubscriber {
 
     @Override
     public String getStatement() {
-        String stm = "select * from GPS(lat='-3.7710616')";
-//        String stm = "select * from Sensor(id='GPS' value[0]='-3.7710668')";
+        String stm = "select * from GPSCEPResource(lat='-3.7710616')";
+//        String stm = "select * from Sensor(id='GPSCEPResource' value[0]='-3.7710668')";
 
         return stm;
     }
