@@ -23,10 +23,10 @@ public interface PMSInterface {
     /**
      * Register the EPL statement classes in the CEP engine.
      * Implement a StatementSubscriber extension
-     * @see StatementSubscriber
-     * @param resourceClass
+     * @ s e e StatementSubscriber
+     * @ param resourceClass
      */
-    public void addCEPRule(StatementSubscriber resourceClass);
+//    public void addCEPRule(StatementSubscriber resourceClass);
 
 
     public void addCEPResourceClass(Class<? extends CEPResource> cls);

@@ -3,16 +3,17 @@ package br.ufc.mdcc.cmu.pmslib;
 import android.content.Context;
 import android.util.Log;
 
+import com.hp.hpl.jena.ontology.OntModel;
+
 import org.eclipse.paho.client.mqttv3.MqttException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.ufc.mdcc.cmu.pmslib.cep.CEPEventHandler;
-import br.ufc.mdcc.cmu.pmslib.cep.StatementSubscriber;
 import br.ufc.mdcc.cmu.pmslib.cep.CEPResource;
 import br.ufc.mdcc.cmu.pmslib.cep.resources.GPSCEPResource;
-import br.ufc.mdcc.cmu.pmslib.cep.statements.GPSStatement;
 import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
 import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
 import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
@@ -30,6 +31,7 @@ import br.ufc.mdcc.cmu.pmslib.mqttbroker.moquette.MQTTBrokerAdapterImpl;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkTechnology;
 import br.ufc.mdcc.cmu.pmslib.ontology.jena.OntologyFrameworkAdapterImpl;
+import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.GenericAnnotation;
 
 /**
  * Created by makleyston on 14/01/2021
@@ -67,6 +69,10 @@ public class PMS implements PMSInterface {
         return instance;
     }
 
+    public static PMS getInstance() throws PMSException{
+        return instance;
+    }
+
     @Override
     public void start() throws PMSException {
         if(!this.active) {
@@ -86,16 +92,6 @@ public class PMS implements PMSInterface {
         }else
             Log.i(TAG, "PMS already stopped!");
     }
-
-    @Override
-    public void addCEPRule(StatementSubscriber resourceClass) {
-        this.cepEventHandler.addCEPRule(((StatementSubscriber) resourceClass));
-    }
-
-//    @Override
-//    public void setOntologyFrameworkAdapter(OntologyFrameworkAdapterInterface ontologyFramework) {
-//        this.ontologyFrameworkAdapter = ontologyFramework;
-//    }
 
     @Override
     public void setIoTMiddlewareAdapter(IoTMiddlewareAdapterInterface ioTMiddlewareAdapter) {
@@ -209,16 +205,11 @@ public class PMS implements PMSInterface {
         cepEventHandler = CEPEventHandler.getInstance(context);
 
         /*Adding CEP resource*/
-        cepEventHandler.addCEPResource(new GPSCEPResource(null, context));
-
-        /*Adding resource sensor*/
-//        cepEventHandler.addResourceClass(GPSCEPResource.class);
-
-        /*Adding CEP rule*/
-//        cepEventHandler.addCEPRule(new GPSStatement(context));
+        cepEventHandler.addResourceClass(GPSCEPResource.class);
 
         if(!cepEventHandler.isActive()) {
             cepEventHandler.start();
+            //Log.d(TAG, ">> CEP start *****");
             cepEventHandler.registerEPL();
         }
 
@@ -228,10 +219,34 @@ public class PMS implements PMSInterface {
     /*This method receives data from IoT middleware and sends it to CEP handler*/
     public void PMSManager(SensorInterface sensor){
         /*Semantic annotation*/
-        Object obj = this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
-        GPSCEPResource GPSCEPResource = new GPSCEPResource((com.hp.hpl.jena.rdf.model.Resource) obj);
+        OntModel semanticObject = (OntModel) this.ontologyFrameworkTechnology.semanticAnnotation(sensor);
 
-        this.cepEventHandler.eventHandler(GPSCEPResource);
+        for (CEPResource cepResource : this.cepEventHandler.getCEPResources()) {
+            GenericAnnotation genericAnnotation = new GenericAnnotation();
+            genericAnnotation.setOntModel(semanticObject);
+            if(cepResource.getId().trim().equals(genericAnnotation.returnIdSensor().trim())){
+                try {
+                    Class[] parameterType = new Class[1];
+                    parameterType[0] = OntModel.class;
+                    Object obj =  Class.forName("br.ufc.mdcc.cmu.pmslib.cep.resources."+cepResource.getClass().getSimpleName())
+                            .getDeclaredConstructor(parameterType).newInstance(semanticObject);
+                    this.cepEventHandler.eventHandler(obj);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+//        GPSCEPResource GPSCEPResource = new GPSCEPResource(semanticObject);
+//        this.cepEventHandler.eventHandler(GPSCEPResource);
+
     }
 
     /*This method receives data from CEP handler and sends to MQTT Broker*/
@@ -251,8 +266,8 @@ public class PMS implements PMSInterface {
     }
 
     @Override
-    public void addCEPResourceClass(Class<? extends CEPResource> cls){
-        this.addCEPResourceClass(cls);
+    public void addCEPResourceClass(Class cls){
+        this.cepEventHandler.addResourceClass(cls);
     }
 
 }

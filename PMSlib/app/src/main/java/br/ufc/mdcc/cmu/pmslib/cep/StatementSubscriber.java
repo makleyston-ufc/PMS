@@ -1,6 +1,5 @@
 package br.ufc.mdcc.cmu.pmslib.cep;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.CallSuper;
@@ -9,24 +8,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufc.mdcc.cmu.pmslib.PMS;
+import br.ufc.mdcc.cmu.pmslib.exception.PMSException;
 
 /**
  * Created by makleyston on 14/01/2021
  */
 
 public abstract class StatementSubscriber {
-    private Context context;
     private PMS pms = null;
     private List<String> domains = new ArrayList<String>();
 
-    public StatementSubscriber(Context context){
-        this.context = context;
-        this.pms = PMS.getInstance(context);
+    public StatementSubscriber() {
+        try {
+            this.pms = PMS.getInstance();
+        } catch (PMSException e) {
+            e.printStackTrace();
+        }
     }
-
-    public void setContext(Context context){this.context = context;}
-
-    public Context getContext(){return this.context;}
 
     /**
      * This method will be called by the CEP to
@@ -42,7 +40,8 @@ public abstract class StatementSubscriber {
      * @param topic
      */
     public void addDomain(String topic){
-        this.domains.add(topic);
+        if(!this.domains.contains(topic))
+            this.domains.add(topic);
     }
 
     /**

@@ -7,9 +7,8 @@ import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
-
 import java.util.ArrayList;
-
+import br.ufc.mdcc.cmu.pmslib.cep.resources.GPSCEPResource;
 import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
 
 /**
@@ -21,12 +20,13 @@ public final class CEPEventHandler {
     public static CEPEventHandler instance = null;
     private Context context = null;
     private ArrayList<Class<? extends CEPResource>> resourceClasses = new ArrayList<>();
-    private ArrayList<CEPResource> CEPRuleClasses = new ArrayList<>();
+    private ArrayList<CEPResource> cepResources = new ArrayList<>();
+
     private boolean active = false;
 
     /** Asper service **/
     private EPServiceProvider epService;
-    private EPStatement epStatement;
+//    private EPStatement epStatement;
     final private String TAG = getClass().getSimpleName();
 
 
@@ -41,7 +41,7 @@ public final class CEPEventHandler {
     }
 
     public void eventHandler(Object obj){
-        for (Class<? extends CEPResource> s: this.resourceClasses) {
+        for (Class s: this.resourceClasses) {
             if(obj.getClass() == s) {
                 epService.getEPRuntime().sendEvent(obj);
             }
@@ -51,7 +51,7 @@ public final class CEPEventHandler {
     public void start() throws CEPException {
         if(this.active) return;
         Configuration cepConfig = new Configuration();
-        for (Class<? extends CEPResource> s: this.resourceClasses) {
+        for (Class s: this.resourceClasses) {
             cepConfig.addEventType(s.getSimpleName(), s.getName());
         }
         epService = EPServiceProviderManager.getDefaultProvider(cepConfig);
@@ -61,7 +61,7 @@ public final class CEPEventHandler {
 
     public void stop() throws CEPException{
         try{
-        epStatement.stop();
+//        epStatement.stop();
         epService.destroy();
         }catch (Exception e){
             e.printStackTrace();
@@ -72,7 +72,7 @@ public final class CEPEventHandler {
     }
 
     public void resumeService(){
-        epStatement.start();
+//        epStatement.start();
         this.active = true;
     }
 
@@ -80,28 +80,30 @@ public final class CEPEventHandler {
         epService.getEPAdministrator().destroyAllStatements();
     }
 
-    private void addCEPRule(CEPResource stm){
-        this.CEPRuleClasses.add(stm);
-    }
-
-    private void addResourceClass(Class<? extends CEPResource> resourceClass){
+    public void addResourceClass(Class<? extends CEPResource> resourceClass){
         this.resourceClasses.add(resourceClass);
     }
 
+    public ArrayList<Class<? extends CEPResource>> getCEPResourceClasses(){
+        return this.resourceClasses;
+    }
+
+    public ArrayList<CEPResource> getCEPResources(){
+        return this.cepResources;
+    }
+
     public void registerEPL() {
-        for (CEPResource stmSb : CEPRuleClasses) {
+        for (Class stmSb : resourceClasses) {
             try {
-                epStatement = epService.getEPAdministrator().createEPL(stmSb.getStatement());
-                epStatement.setSubscriber(stmSb);
+                CEPResource cepResource = ((CEPResource)stmSb.newInstance());
+                EPStatement epStatement = epService.getEPAdministrator().createEPL(cepResource.getStatement());
+                this.cepResources.add(cepResource);
+                epStatement.setSubscriber(cepResource);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void addCEPResource(CEPResource cls){
-        addCEPRule(cls);
-        addResourceClass(cls.getClass());
+        epService.getEPAdministrator().startAllStatements();
     }
 
     public boolean isActive() {

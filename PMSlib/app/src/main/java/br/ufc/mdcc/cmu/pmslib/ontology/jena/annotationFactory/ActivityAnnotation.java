@@ -7,15 +7,13 @@ import java.io.File;
 
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 
-public class ActivityAnnotationSensor implements SensorTypeAnnotation {
+public class ActivityAnnotation implements TypeSensorsAnnotation {
     SensorInterface sensor;
     String type;
     GenericAnnotation annotation = new GenericAnnotation();
-
-    public ActivityAnnotationSensor(SensorInterface sensor){
+    public ActivityAnnotation(SensorInterface sensor){
         this.sensor = sensor;
     }
-
     @Override
     public OntModel sensorAnnotation() {
         annotation.createPrefix("iot-lite", "http://purl.oclc.org/NET/UNIS/fiware/iot-lite/");
@@ -56,6 +54,8 @@ public class ActivityAnnotationSensor implements SensorTypeAnnotation {
                 "Metadatatype",type);
         metadata=annotation.annotationDataProperty(metadata,"iot-lite",
                 "Metavalue",num);
+//        metadata=annotation.annotationDataProperty(metadata,"ssn",
+//                "id",this.sensor.getId());
         sensorAnot=annotation.annotationObjectProperty("iot-lite",sensorAnot, metadata, "hasMetadata");
 
         return annotation.returnModel();
@@ -64,5 +64,25 @@ public class ActivityAnnotationSensor implements SensorTypeAnnotation {
     @Override
     public File writeRDF(OntModel model) {
         return annotation.writeRdf(model);
+    }
+
+    @Override
+    public double returnValuePropertyDouble(String uri, String name) {
+        return annotation.returnValuePropertyDouble(uri, name);
+    }
+
+    @Override
+    public String returnValuePropertyString(String uri, String name) {
+        return annotation.returnValuePropertyString(uri, name);
+    }
+
+    @Override
+    public int returnValuePropertyInt(String uri, String name) {
+        return annotation.returnValuePropertyInt(uri, name);
+    }
+
+    @Override
+    public String returnIdSensor() {
+        return annotation.returnIdSensor();
     }
 }

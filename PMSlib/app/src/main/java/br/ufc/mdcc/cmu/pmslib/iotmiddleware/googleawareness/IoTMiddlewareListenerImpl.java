@@ -19,6 +19,8 @@ public final class IoTMiddlewareListenerImpl extends IoTMiddlewareListener {
 
     @Override
     public void onReceiveData(SensorInterface sensor) {
+        /*GPS example*/
+        sensor.setId("LocalizationSensor");
         super.onReceiveData(sensor);
         Log.i(TAG, ">> onReceiveData | Value Lat:"+sensor.getValue().get(0)+" | Long: "+sensor.getValue().get(1));
     }

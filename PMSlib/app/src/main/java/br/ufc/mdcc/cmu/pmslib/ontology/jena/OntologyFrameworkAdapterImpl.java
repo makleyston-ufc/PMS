@@ -1,23 +1,30 @@
 package br.ufc.mdcc.cmu.pmslib.ontology.jena;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.hp.hpl.jena.ontology.OntModel;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 
+import br.ufc.mdcc.cmu.pmslib.cep.CEPResource;
 import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
-import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.ActivityAnnotationSensor;
+import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.ActivityAnnotation;
 import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.GenericAnnotation;
-import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.LocalizationAnnotationSensor;
+import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.LocalizationAnnotation;
 
 public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapterInterface {
 
     private String TAG = getClass().getName();
 
+    private final int MY_PERMISSION_STORAGE_W = 222;
+    private final int MY_PERMISSION_STORAGE_R = 333;
     public OntologyFrameworkAdapterImpl(Context context) {
         super(context);
     }
@@ -25,7 +32,7 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
     @Override
     public void loadKnowledge(String path) throws OntologyFrameworkException {
         Log.d(TAG, ">> loadKnowledge string");
-        //TODO
+        //TODOl
     }
 
     @Override
@@ -44,15 +51,16 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
     public void stop() {
         Log.d(TAG, ">> stop ontology framework");}
 
+        /*Rever uma forma de resolver a heterogeneidade!*/
     @Override
     public Object semanticAnnotation(SensorInterface sensor) {
         Log.d(TAG, ">> Semantic annotation of sensor read");
         if(sensor.getId()=="LocalizationSensor"){
-            LocalizationAnnotationSensor localizationSensor =new LocalizationAnnotationSensor(sensor);
+            LocalizationAnnotation localizationSensor = new LocalizationAnnotation(sensor);
             return localizationSensor.sensorAnnotation();
         }else if(sensor.getId()=="ActivitySensor") {
-            ActivityAnnotationSensor sensorActivity = new ActivityAnnotationSensor(sensor);
-            return sensorActivity.sensorAnnotation();
+            ActivityAnnotation activitySensor = new ActivityAnnotation(sensor);
+            return activitySensor.sensorAnnotation();
         }
         return null;
     }
@@ -61,13 +69,34 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
     public File getRDF(Object object) {
         Log.d(TAG, ">> Generate RDF file with Object that references an individual in the Ontology");
         GenericAnnotation gen = new GenericAnnotation();
-        return gen.writeRdf((OntModel) object);
-
+        return gen.writeRdf(((CEPResource) object).getOntModel());
     }
 
     @Override
     public void requestPermissions() {
-        //TODO
+        /*Request permission*/
+        if (ContextCompat.checkSelfPermission(
+                getContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    (Activity) getContext(),
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSION_STORAGE_W
+            );
+            return;
+        }
+        if (ContextCompat.checkSelfPermission(
+                getContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    (Activity) getContext(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSION_STORAGE_R
+            );
+            return;
+        }
     }
 
 }
