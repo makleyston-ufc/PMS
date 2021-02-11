@@ -18,13 +18,13 @@ allprojects {
 
 #### 2. Include in the `gradle.app` in `dependencies`:
 
-```implementation 'com.github.makleyston-ufc.PMS:app:main-SNAPSHOT'```
+```implementation 'com.github.makleyston-ufc.PMS:app:v0.2'```
 
 Example:
 ```
 dependencies {
     ...
-    implementation 'com.github.makleyston-ufc.PMS:app:main-SNAPSHOT'
+    implementation 'com.github.makleyston-ufc.PMS:app:v0.2'
 }
 
 ```
@@ -47,7 +47,7 @@ try {
 }
 ```
 
-#### 2.1. Implementing a CEP event and rule
+#### 2.1. Implementing a CEP event and rule.
 The PMS service receives several events, so your client app needs to specify which events interesting it. To create a CEP event and rule, create a class that extends the ```CEPResource``` class. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/cep/resources/GPSCEPResource.java).
 ```
 public class GPSCEPResource extends CEPResource {
@@ -126,5 +126,42 @@ try {
 }
 ```
 
-
 #### 4. Implement a MQTT subscriber your preference to comsume the data published by PMS Service in the MQTT Broker. We suggest the MQTT Client [Paho](https://www.eclipse.org/paho/). 
+PMS Service publishes an RDF file in the MQTT Broker ever that the CEP engine detects an event. So, your client app must read these messages. See a message example of GPS semantic data published in the MQTT Broker following.
+```
+<?xml version="1.0" encoding="UTF-8"?>
+    <rdf:RDF
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:owl="http://www.w3.org/2002/07/owl#"
+        xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos/"
+        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+        xmlns:iot-lite="http://purl.oclc.org/NET/UNIS/fiware/iot-lite/"
+        xmlns:ssn="http://purl.oclc.org/NET/ssnx/ssn/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema#" > 
+      <rdf:Description rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos/Point">
+        <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#double">XXXXXXXXX</geo:long>
+        <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#double">YYYYYYYY</geo:lat>
+        <rdf:type rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos/LocalizationSensor"/>
+      </rdf:Description>
+      <rdf:Description rdf:about="http://purl.oclc.org/NET/UNIS/fiware/iot-lite/LocalizationSensorID123">
+        <geo:location rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos/Point"/>
+        <rdf:type rdf:resource="http://purl.oclc.org/NET/ssnx/ssn/LocationSensor"/>
+      </rdf:Description>
+    </rdf:RDF>
+```
+
+#### 5. How to publish RDF data to a web service using the `POST` command? 
+Create an instance of type `ConfigREST` and set it in the PMS Service. See the example following:
+```
+PMSInterface pms = PMS.getInstance(this);
+
+/*Create an instance of type ConfigREST (with host and port value) and set it in the PMS Service*/
+pms.setConfigREST(new ConfigREST("192.168.1.67"));
+
+try {
+    pms.start();
+} catch (PMSException e) {
+    e.printStackTrace();
+}
+```
+The message contains an array of topics and a RDF content. This message is posts in the URI `/PMSPublish` of RESTFul service.
