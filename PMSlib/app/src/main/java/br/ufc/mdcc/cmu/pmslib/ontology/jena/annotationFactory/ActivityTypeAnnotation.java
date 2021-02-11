@@ -7,11 +7,11 @@ import java.io.File;
 
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 
-public class ActivityAnnotation implements TypeSensorsAnnotation {
+public class ActivityTypeAnnotation implements SensorsTypeAnnotation {
     SensorInterface sensor;
     String type;
     GenericAnnotation annotation = new GenericAnnotation();
-    public ActivityAnnotation(SensorInterface sensor){
+    public ActivityTypeAnnotation(SensorInterface sensor){
         this.sensor = sensor;
     }
     @Override
@@ -20,7 +20,7 @@ public class ActivityAnnotation implements TypeSensorsAnnotation {
         annotation.createPrefix("ssn", "http://purl.oclc.org/NET/ssnx/ssn/");
         Individual sensorAnot=annotation.createIndividual("ssn",
                 "Sensor", "iot-lite", sensor.getId());
-        Individual metadata= annotation.createIndividual("iot-lite", "Metadata-"+this.sensor.getId(),
+        Individual metadata= annotation.createIndividual("iot-lite", "Metadata-"+this.sensor.getType(),
                 "Metadata");
         int num = Integer.valueOf(this.sensor.getValue().get(0).intValue());
         switch (num){
@@ -54,8 +54,6 @@ public class ActivityAnnotation implements TypeSensorsAnnotation {
                 "Metadatatype",type);
         metadata=annotation.annotationDataProperty(metadata,"iot-lite",
                 "Metavalue",num);
-//        metadata=annotation.annotationDataProperty(metadata,"ssn",
-//                "id",this.sensor.getId());
         sensorAnot=annotation.annotationObjectProperty("iot-lite",sensorAnot, metadata, "hasMetadata");
 
         return annotation.returnModel();

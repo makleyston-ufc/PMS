@@ -99,7 +99,8 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
                             values.add(locationResponse.getLocation().getLatitude());
                             values.add(locationResponse.getLocation().getLongitude());
                             sensor.setValue(values);
-                            sensor.setId("GPSCEPResource");
+                            sensor.setId("LocalizationSensorID123");
+                            sensor.setType("http://www.w3.org/2003/01/geo/wgs84_pos/", "LocalizationSensor");
 
                             getIoTMiddlewareListener().onReceiveData(sensor);
                         } catch (IoTMiddlewareException e) {
@@ -108,6 +109,8 @@ public class IoTMiddlewareAdapterImpl extends IoTMiddlewareAdapterInterface {
                         }
                     }
                 });
+
+        //TODO fazer os outros snapshots
     }
 
 

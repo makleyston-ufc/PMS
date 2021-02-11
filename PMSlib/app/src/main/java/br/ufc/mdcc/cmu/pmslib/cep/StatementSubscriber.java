@@ -51,10 +51,10 @@ public abstract class StatementSubscriber {
     @CallSuper
     public void update(Object eventMap){
         if(eventMap != null){
-            for (String topic: domains) {
+            //for (String topic: domains) {
                 Log.d(TAG, ">> Event found!! "+eventMap.getClass().getSimpleName());
-                pms.PMSManager(topic, eventMap);
-            }
+                pms.PMSManager(this.domains, eventMap);
+            //}
         }
     }
 }

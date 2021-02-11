@@ -8,6 +8,8 @@ import java.util.List;
  */
 public abstract class SensorInterface {
     private String id;
+    private String type;
+    private String vocabulary;
     private List<Double> value = new ArrayList<Double>();
 
     public String getId() {
@@ -24,5 +26,23 @@ public abstract class SensorInterface {
 
     public void setValue(List<Double> value) {
         this.value = value;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getFullType() {
+        return vocabulary + type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+        this.vocabulary = "http://www.w3.org/2003/01/geo/wgs84_pos/";
+    }
+
+    public void setType(String vocabulary, String type) {
+        this.type = type;
+        this.vocabulary = vocabulary;
     }
 }

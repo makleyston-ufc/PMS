@@ -86,7 +86,6 @@ public class GenericAnnotation extends OntologyAnnotationFactory {
     @Override
     public File writeRdf(OntModel model) {
         Log.d(TAG, ">> Write RDF");
-        //model.write(System.out, "RDF/XML");
 
         File file = new File(Environment.getExternalStorageDirectory() + "/" + File.separator + "model.rdf");
         try {
@@ -112,8 +111,8 @@ public class GenericAnnotation extends OntologyAnnotationFactory {
             Statement s = it.next();
             if (s.getPredicate().toString().equals(uri + name)) {
                 String[] parts=s.getObject().toString().split(Pattern.quote("^"));
-                Log.d(TAG, s.getObject().toString());
-                Log.d(TAG, parts[0]);
+//                Log.d(TAG, s.getObject().toString());
+//                Log.d(TAG, parts[0]);
                 return Double.parseDouble(parts[0]);
             }
         }
@@ -127,8 +126,8 @@ public class GenericAnnotation extends OntologyAnnotationFactory {
 
             if (s.getPredicate().toString().equals(uri + name)) {
                 String[] parts=s.getObject().toString().split(Pattern.quote("^"));
-                Log.d(TAG, s.getObject().toString());
-                Log.d(TAG, parts[0]);
+//                Log.d(TAG, s.getObject().toString());
+//                Log.d(TAG, parts[0]);
                 return parts[0];
             }
         }
@@ -141,8 +140,8 @@ public class GenericAnnotation extends OntologyAnnotationFactory {
             Statement s = it.next();
             if (s.getPredicate().toString().equals(uri + name)) {
                 String[] parts=s.getObject().toString().split(Pattern.quote("^"));
-                Log.d(TAG, s.getObject().toString());
-                Log.d(TAG, parts[0]);
+//                Log.d(TAG, s.getObject().toString());
+//                Log.d(TAG, parts[0]);
                 return Integer.parseInt(parts[0]);
             }
         }
@@ -166,5 +165,10 @@ public class GenericAnnotation extends OntologyAnnotationFactory {
             }
         }
         return null;
+    }
+
+
+    public String returnTypeSensor() {
+        return this.returnValuePropertyString("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "type").trim();
     }
 }

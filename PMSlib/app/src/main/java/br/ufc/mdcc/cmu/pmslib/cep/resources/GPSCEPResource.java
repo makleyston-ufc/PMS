@@ -32,7 +32,7 @@ public class GPSCEPResource extends CEPResource {
     public GPSCEPResource(){
         super();
         addDomain("/test");
-        setId("LocalizationSensor");
+        setType("http://www.w3.org/2003/01/geo/wgs84_pos/", "LocalizationSensor");
     }
 
     public GPSCEPResource(OntModel ontModel) {
@@ -48,7 +48,7 @@ public class GPSCEPResource extends CEPResource {
 
     @Override
     public String getStatement() {
-        String stm = "select o from GPSCEPResource as o where o.lat = '-3.7710643'";
+        String stm = "select o from GPSCEPResource as o where o.lat = '-3.771074'";
         return stm;
     }
 

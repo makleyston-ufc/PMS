@@ -1,10 +1,11 @@
 package br.ufc.mdcc.cmu.pmslib;
 
-import br.ufc.mdcc.cmu.pmslib.cep.StatementSubscriber;
 import br.ufc.mdcc.cmu.pmslib.cep.CEPResource;
+import br.ufc.mdcc.cmu.pmslib.connection.ConfigREST;
 import br.ufc.mdcc.cmu.pmslib.exception.PMSException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.IoTMiddlewareAdapterInterface;
 import br.ufc.mdcc.cmu.pmslib.mqttbroker.MQTTBrokerAdapterInterface;
+import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.SensorsTypeAnnotation;
 
 public interface PMSInterface {
 
@@ -52,4 +53,9 @@ public interface PMSInterface {
      */
     public void setMQTTBrokerAdapter(MQTTBrokerAdapterInterface mqttBrokerAdapter);
 
+    public void setConfigREST(ConfigREST config);
+
+    public ConfigREST getConfigREST();
+
 }
+

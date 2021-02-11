@@ -15,9 +15,9 @@ import br.ufc.mdcc.cmu.pmslib.cep.CEPResource;
 import br.ufc.mdcc.cmu.pmslib.exception.OntologyFrameworkException;
 import br.ufc.mdcc.cmu.pmslib.iotmiddleware.sensors.SensorInterface;
 import br.ufc.mdcc.cmu.pmslib.ontology.OntologyFrameworkAdapterInterface;
-import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.ActivityAnnotation;
+import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.ActivityTypeAnnotation;
 import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.GenericAnnotation;
-import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.LocalizationAnnotation;
+import br.ufc.mdcc.cmu.pmslib.ontology.jena.annotationFactory.LocalizationTypeAnnotation;
 
 public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapterInterface {
 
@@ -55,11 +55,11 @@ public final class OntologyFrameworkAdapterImpl extends OntologyFrameworkAdapter
     @Override
     public Object semanticAnnotation(SensorInterface sensor) {
         Log.d(TAG, ">> Semantic annotation of sensor read");
-        if(sensor.getId()=="LocalizationSensor"){
-            LocalizationAnnotation localizationSensor = new LocalizationAnnotation(sensor);
+        if(sensor.getFullType().trim().equals("http://www.w3.org/2003/01/geo/wgs84_pos/LocalizationSensor")){
+            LocalizationTypeAnnotation localizationSensor = new LocalizationTypeAnnotation(sensor);
             return localizationSensor.sensorAnnotation();
-        }else if(sensor.getId()=="ActivitySensor") {
-            ActivityAnnotation activitySensor = new ActivityAnnotation(sensor);
+        }else if(sensor.getType()=="ActivitySensor") {
+            ActivityTypeAnnotation activitySensor = new ActivityTypeAnnotation(sensor);
             return activitySensor.sensorAnnotation();
         }
         return null;

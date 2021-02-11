@@ -15,6 +15,7 @@ import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 import java.io.File;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
@@ -41,7 +42,7 @@ public class MQTTProtocol {
         return "tcp://"+host+":1883";
     }
 
-    public void publish(String topic, String host, File file){
+    public void publish(List<String> topics, String host, File file){
         if((host == null) || (host.equals(""))) host = "localhost";
 
         MqttClient client;
@@ -51,7 +52,9 @@ public class MQTTProtocol {
             client.connect();
             MqttMessage msg = new MqttMessage(bytes);
             msg.setQos(0);
-            client.publish(topic, msg);
+            for (String topic : topics) {
+                client.publish(topic, msg);
+            }
             client.disconnect();
         } catch (MqttException | IOException e) {
             e.printStackTrace();

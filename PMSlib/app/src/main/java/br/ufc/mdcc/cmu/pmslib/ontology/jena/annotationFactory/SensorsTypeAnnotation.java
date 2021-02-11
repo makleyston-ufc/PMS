@@ -4,7 +4,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 
 import java.io.File;
 
-public interface TypeSensorsAnnotation {
+public interface SensorsTypeAnnotation {
     public OntModel sensorAnnotation();
     public File writeRDF(OntModel model);
     public double returnValuePropertyDouble(String uri, String name);

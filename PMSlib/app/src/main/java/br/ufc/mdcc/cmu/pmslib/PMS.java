@@ -1,19 +1,36 @@
 package br.ufc.mdcc.cmu.pmslib;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.hp.hpl.jena.ontology.OntModel;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import br.ufc.mdcc.cmu.pmslib.cep.CEPEventHandler;
 import br.ufc.mdcc.cmu.pmslib.cep.CEPResource;
 import br.ufc.mdcc.cmu.pmslib.cep.resources.GPSCEPResource;
+import br.ufc.mdcc.cmu.pmslib.connection.ConfigREST;
 import br.ufc.mdcc.cmu.pmslib.exception.CEPException;
 import br.ufc.mdcc.cmu.pmslib.exception.IoTMiddlewareException;
 import br.ufc.mdcc.cmu.pmslib.exception.MQTTBrokerException;
@@ -58,6 +75,7 @@ public class PMS implements PMSInterface {
     private static PMS instance = null;
     private boolean active = false;
     private final String TAG = getClass().getSimpleName();
+    private ConfigREST configREST = null;
 
     private PMS(Context context){
         this.context = context;
@@ -101,6 +119,16 @@ public class PMS implements PMSInterface {
     @Override
     public void setMQTTBrokerAdapter(MQTTBrokerAdapterInterface mqttBrokerAdapter) {
         this.MQTTBrokerAdapter = mqttBrokerAdapter;
+    }
+
+    @Override
+    public void setConfigREST(ConfigREST config) {
+        this.configREST = config;
+    }
+
+    @Override
+    public ConfigREST getConfigREST(){
+        return this.configREST;
     }
 
     private void init(Context context){
@@ -205,7 +233,7 @@ public class PMS implements PMSInterface {
         cepEventHandler = CEPEventHandler.getInstance(context);
 
         /*Adding CEP resource*/
-        cepEventHandler.addResourceClass(GPSCEPResource.class);
+        //cepEventHandler.addResourceClass(GPSCEPResource.class);
 
         if(!cepEventHandler.isActive()) {
             cepEventHandler.start();
@@ -224,11 +252,11 @@ public class PMS implements PMSInterface {
         for (CEPResource cepResource : this.cepEventHandler.getCEPResources()) {
             GenericAnnotation genericAnnotation = new GenericAnnotation();
             genericAnnotation.setOntModel(semanticObject);
-            if(cepResource.getId().trim().equals(genericAnnotation.returnIdSensor().trim())){
+            if(cepResource.getType().trim().equals(genericAnnotation.returnTypeSensor().trim())){
                 try {
                     Class[] parameterType = new Class[1];
                     parameterType[0] = OntModel.class;
-                    Object obj =  Class.forName("br.ufc.mdcc.cmu.pmslib.cep.resources."+cepResource.getClass().getSimpleName())
+                    Object obj =  Class.forName(cepResource.getClass().getName())
                             .getDeclaredConstructor(parameterType).newInstance(semanticObject);
                     this.cepEventHandler.eventHandler(obj);
                 } catch (ClassNotFoundException e) {
@@ -250,9 +278,14 @@ public class PMS implements PMSInterface {
     }
 
     /*This method receives data from CEP handler and sends to MQTT Broker*/
-    public void PMSManager(String topic, Object eventMap){
+    public void PMSManager(List<String> topics, Object eventMap){
         mqttProtocol = MQTTProtocol.getInstance(this.context);
-        mqttProtocol.publish(topic, null, this.ontologyFrameworkTechnology.getRDF(eventMap));
+        File fileRDF = this.ontologyFrameworkTechnology.getRDF(eventMap);
+        mqttProtocol.publish(topics, null, fileRDF);
+        if(this.configREST != null){
+            this.postREST(topics, fileRDF);
+        }
+
     }
 
     public void saveSensorPMS(Object sensor){
@@ -270,4 +303,37 @@ public class PMS implements PMSInterface {
         this.cepEventHandler.addResourceClass(cls);
     }
 
+    private void postREST(List<String> topics, File file){
+
+        String postUrl = this.configREST.getHost()+
+                (this.getConfigREST().getPort()!=null ? ":"+this.configREST.getPort():"") + "/PMSPublish";
+        RequestQueue requestQueue = Volley.newRequestQueue(this.context);
+
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("topics", topics);
+            postData.put("rdf", file);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, postUrl, postData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
 }
+
+
