@@ -1,8 +1,8 @@
-# Patient Monitoring Service - PMS Service
-PMS Service offers an API to monitor sensors in the environment, gather data, annotate the data semantically (ontology-based), find patterns on the data stream, and publish the events founded (in format RDF) in the MQTT Broker to any/several client apps can consume it.
+# Patient Monitoring Service Library - PMS lib
+PMS lib offers an API to monitor sensors in the environment, gather data, annotate the data semantically (ontology-based), find patterns on the data stream, and publish the events founded (in format RDF) in the MQTT Broker to any/several client apps can consume it.
 
-## How to import the PMS Service?
-#### 1. Include in the `gradle.project` in `repositories`:
+## How to import the PMS lib?
+#### 1. Include in the `gradle.project`'s `repositories` section:
 
 ```maven { url "https://jitpack.io" }```
 
@@ -16,7 +16,7 @@ allprojects {
 }
 ```
 
-#### 2. Include in the `gradle.app` in `dependencies`:
+#### 2. Include in the `gradle.app`'s `dependencies` section:
 
 ```implementation 'com.github.makleyston-ufc.PMS:app:v0.2'```
 
@@ -29,12 +29,12 @@ dependencies {
 
 ```
 
-## How to use the PMS Service?
+## How to use the PMS lib?
 
-#### 1. How to use the PMS Service:
-The `start ()` method starts the PMS service.
+#### 1. Importing and starting the PMS lib's services.
+The `start()` method starts the PMS lib's services.
 ```
-//Required imports 
+/*Required imports*/
 import br.ufc.mdcc.cmu.pmslib.PMS;
 import br.ufc.mdcc.cmu.pmslib.PMSInterface;
 import br.ufc.mdcc.cmu.pmslib.exception.PMSException;
@@ -48,13 +48,13 @@ try {
 ```
 
 #### 2.1. Implementing a CEP event and rule.
-The PMS service receives several events, so your client app needs to specify which events interesting it. To create a CEP event and rule, create a class that extends the ```CEPResource``` class. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/cep/resources/GPSCEPResource.java).
+PMS lib receives several events, so your client app needs to specify which events interesting it. To create a CEP event and rule, create a class that extends the [`CEPResource`](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/cep/CEPResource.java) class. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/cep/resources/GPSCEPResource.java).
 ```
 public class GPSCEPResource extends CEPResource {
     public String lat;
     public String log;
     
-    //Getters and setters
+    /*Getters and setters*/
 
     public GPSCEPResource(){
         super();
@@ -81,12 +81,12 @@ public class GPSCEPResource extends CEPResource {
 Note 1: CEP engine requires the setters and getters of attributes that were specified.
 
 Note 2: Create two constructors: 
-* A constructor without parameters and with specified topics (method ```addDomain()```) which the PMS service must publish, and the specified sensor types this CEPResource work.
-* A constructor with a parameter of type OntModel. This parameter contains the sensor semantic annotation that generated the event.
+* A constructor without parameters and with specified topics (use the `addDomain()` method) which the PMS lib must publish, and the specified sensor types this CEPResource work.
+* A constructor with a parameter of type `OntModel`. This parameter contains the sensor semantic annotation that generated the event.
 
-Note 3: Implement the method ```getStatement()``` to return a CEP rule. 
+Note 3: Implement the method `getStatement()` to return a CEP rule in `String` format. 
 
-#### 2.2. How to use my CEPResource implementations in PMS service?
+#### 2.2. Using my CEPResource implementations in the PMS lib.
 ```
 PMSInterface pms = PMS.getInstance(this);
 
@@ -101,22 +101,26 @@ try {
 }
 ```
 
-#### 3.1 How to implement a IoT Middleware and set it in the PMS Service?
-PMS Service has two IoT middleware already implemented, Google Awareness and Loccam. However, it's possible to use several other IoT middleware just implementing a class of type `IoTMiddlewareAdapter`. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/iotmiddleware/googleawareness/IoTMiddlewareAdapterImpl.java). 
+#### 3.1 How to implement a IoT Middleware adapter and set it in the PMS lib?
+PMS lib has two IoT middleware already implemented, Google Awareness and Loccam. If nothing for do, then the PMS lib will use the Google Awareness.
+However, it's possible to use several other IoT middleware just implementing a class of type `IoTMiddlewareAdapter`. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/iotmiddleware/googleawareness/IoTMiddlewareAdapterImpl.java) to implement a IoT middleware adapter. 
 
-Implement the listener to receive the IoT middleware data. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/iotmiddleware/googleawareness/IoTMiddlewareListenerImpl.java).  
+Implement the listener to receive the IoT middleware data. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/iotmiddleware/googleawareness/IoTMiddlewareListenerImpl.java) to implement a IoT middleware listener.
 
-If you implemented a new IoT middleware, then you must to set the IoT middleware adapter implementation in the PMS Service. See the example:
+If you implemented a new IoT middleware adapter, then you must to set it in the PMS lib. See the example follwing:
 ```
 PMSInterface pms = PMS.getInstance(this);
 
-/*Create an instance of type IoTMiddlewareAdapter*/
+/*Create an instance of type IoTMiddlewareAdapter that you have deployed*/
 IoTMiddlewareAdapterImpl ioTMiddlewareAdapter = new IoTMiddlewareAdapterImpl(this);
-/*Create an instance of type IoTMiddlewareListener*/
+
+/*Create an instance of type IoTMiddlewareListener that you have deployed*/
 IoTMiddlewareListenerImpl ioTMiddlewareListener = new IoTMiddlewareListenerImpl(this);
+
 /*Setting the listener in the IoT middleware adapter*/
 ioTMiddlewareAdapter.setIoTMiddlewareListener(ioTMiddlewareListener);
-/*Setting the IoT middleware adapter in the PMS Service*/
+
+/*Setting the IoT middleware adapter in the PMS lib*/
 pms.setIoTMiddlewareAdapter(ioTMiddlewareAdapter);
 
 try {
@@ -126,8 +130,9 @@ try {
 }
 ```
 
-#### 4. Implement a MQTT subscriber your preference to comsume the data published by PMS Service in the MQTT Broker. We suggest the MQTT Client [Paho](https://www.eclipse.org/paho/). 
-PMS Service publishes an RDF file in the MQTT Broker ever that the CEP engine detects an event. So, your client app must read these messages. See a message example of GPS semantic data published in the MQTT Broker following.
+#### 4. How to consume the data that PMS lib publishes?
+Implement a MQTT subscriber your preference to comsume the data published by PMS lib in the MQTT Broker. We suggest the MQTT Client [Paho](https://www.eclipse.org/paho/). 
+PMS lib publishes an RDF file in the MQTT Broker ever that the CEP engine detects an event. So, your client app must read these messages. See a message example of GPS semantic data published in the MQTT Broker following.
 ```
 <?xml version="1.0" encoding="UTF-8"?>
     <rdf:RDF
@@ -150,12 +155,12 @@ PMS Service publishes an RDF file in the MQTT Broker ever that the CEP engine de
     </rdf:RDF>
 ```
 
-#### 5. How to publish RDF data to a web service using the `POST` command? 
-Create an instance of type `ConfigREST` and set it in the PMS Service. See the example following:
+#### 5. How to publish RDF data to a web service using the RESTFul `POST` command? 
+Create an instance of type `ConfigREST` and set it in the PMS lib. See the example following:
 ```
 PMSInterface pms = PMS.getInstance(this);
 
-/*Create an instance of type ConfigREST (with host and port value) and set it in the PMS Service*/
+/*Create an instance of type ConfigREST (with host and port value) and set it in the PMS lib*/
 pms.setConfigREST(new ConfigREST("192.168.1.67"));
 
 try {
