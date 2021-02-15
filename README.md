@@ -178,6 +178,6 @@ Contributors:
 * [Danne Makleyston Gomes Pereira](http://lattes.cnpq.br/2002489019346835)
 * [Francisca Jamires da Costa](http://lattes.cnpq.br/0967947765723262)
 
-This project originated in subject Computation Ubiquo and Mobile of postgraduate course in computer science of University Federal of Ceara.
+This project originated in subject Ubiquitous and Mobile Computation of postgraduate course in computer science of University Federal of Ceara.
 
 <img src="https://www.quixada.ufc.br/wp-content/Arquivos_Site/Brasao%20Vertical%20UFC%20Policromatico.png" alt="drawing" width="100"/>
