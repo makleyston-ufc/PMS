@@ -18,16 +18,19 @@ allprojects {
 
 #### 2. Include in the `gradle.app`'s `dependencies` section:
 
-```implementation 'com.github.makleyston-ufc.PMS:app:v0.2'```
+```implementation 'com.github.makleyston-ufc.PMS:pms:v0.3'```
 
 Example:
 ```
 dependencies {
     ...
-    implementation 'com.github.makleyston-ufc.PMS:app:v0.2'
+    implementation 'com.github.makleyston-ufc.PMS:pms:v0.3'
 }
 
 ```
+Note 1: PMS lib requires the min Android SDK version 19, then include `minSdkVersion 19` in the `gredle.app`.
+Note 2: You can exceed the 64k methods of Android, then you must include `multiDexEnabled = true` in the `gredle.app` to compile your project .
+
 
 ## How to use the PMS lib?
 
@@ -47,8 +50,8 @@ try {
 }
 ```
 
-#### 2.1. Implementing a CEP event and rule.
-PMS lib receives several events, so your client app needs to specify which events interesting it. To create a CEP event and rule, create a class that extends the [`CEPResource`](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/cep/CEPResource.java) class. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/cep/resources/GPSCEPResource.java).
+#### 2.1. Implementing a CEP rule.
+PMS lib receives several events, so your client app needs to specify which events interesting it. The CEP engine included in lib PMS tracks the data stream based on CEP rules. To create a CEP rule, create a class that extends the [`CEPResource`](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/pms/src/main/java/br/ufc/mdcc/cmu/pmslib/cep/CEPResource.java) class. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/demo/src/main/java/br/ufc/mdcc/cmu/demo/LocalizationCEPResource.java).
 ```
 public class GPSCEPResource extends CEPResource {
     public String lat;
@@ -56,35 +59,37 @@ public class GPSCEPResource extends CEPResource {
     
     /*Getters and setters*/
 
-    public GPSCEPResource(){
-        super();
-        addDomain("/anemia");
-        addDomain("/allergy");
-        setType("LocalizationSensor");
+    private final String vocabulary = "http://www.w3.org/2003/01/geo/wgs84_pos/";
+
+    public GPSCEPResource(Object ontModel) {
+        super(ontModel);
+        try {
+            setLat(getSemanticAnnotation().returnValuePropertyString(vocabulary, "lat"));
+            setLog(getSemanticAnnotation().returnValuePropertyString(vocabulary, "long"));
+        } catch (SemanticAnnotationException e) {
+            e.printStackTrace();
+        }
     }
 
-    public GPSCEPResource(OntModel ontModel){
-        super(ontModel);
-        GenericAnnotation genericAnnotation = new GenericAnnotation();
-        genericAnnotation.setOntModel(ontModel);
-
-        lat = genericAnnotation.returnValuePropertyString("http://www.w3.org/2003/01/geo/wgs84_pos/","lat");
-        log = genericAnnotation.returnValuePropertyString("http://www.w3.org/2003/01/geo/wgs84_pos/","long");
+    @Override
+    public void configCEPResource(ConfigCEPResource configCEPResource) {
+        configCEPResource.addTopic("/J10");
+        configCEPResource.setType(vocabulary, "LocalizationSensor");
     }
 
     @Override
     public String getStatement() {
-        return "select o from GPSCEPResource as o where o.lat = 'xxxxx'";
+        return "select o from GPSCEPResource as o where o.lat = '-3.7710573'";
     }
 }
 ```
-Note 1: CEP engine requires the setters and getters of attributes that were specified.
+Note 1: CEP engine requires the *setters* and *getters* of attributes that were specified.
 
-Note 2: Create two constructors: 
-* A constructor without parameters and with specified topics (use the `addDomain()` method) which the PMS lib must publish, and the specified sensor types this CEPResource work.
-* A constructor with a parameter of type `OntModel`. This parameter contains the sensor semantic annotation that generated the event.
+Note 2: Use the `getSemanticAnnotation()` method in the constructor to obtain the read object's semantic values.
 
-Note 3: Implement the method `getStatement()` to return a CEP rule in `String` format. 
+Note 3: Implement the `getStatement()` method to return a CEP rule in `String` format. 
+
+Note 4: Implement the `configCEPResource()`method to set the topics (e.g. `configCEPResource.addTopic("/J10")`) that will be used to publish the events found by the CEP engine, and to set the type of sensors this CEP rule work (e.g. `configCEPResource.setType(vocabulary, type)`).
 
 #### 2.2. Using my CEPResource implementations in the PMS lib.
 ```
@@ -103,9 +108,9 @@ try {
 
 #### 3.1 How to implement a IoT Middleware adapter and set it in the PMS lib?
 PMS lib has two IoT middleware already implemented, Google Awareness and Loccam. If nothing for do, then the PMS lib will use the Google Awareness.
-However, it's possible to use several other IoT middleware just implementing a class of type `IoTMiddlewareAdapter`. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/iotmiddleware/googleawareness/IoTMiddlewareAdapterImpl.java) to implement a IoT middleware adapter. 
+However, it's possible to use several other IoT middleware just implementing a class of type `IoTMiddlewareAdapter`. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/pms/src/main/java/br/ufc/mdcc/cmu/pmslib/iotmiddleware/googleawareness/IoTMiddlewareAdapterImpl.java) to implement a IoT middleware adapter. 
 
-Implement the listener to receive the IoT middleware data. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/app/src/main/java/br/ufc/mdcc/cmu/pmslib/iotmiddleware/googleawareness/IoTMiddlewareListenerImpl.java) to implement a IoT middleware listener.
+Implement the listener to receive the IoT middleware data. See the [example](https://github.com/makleyston-ufc/PMS/blob/main/PMSlib/pms/src/main/java/br/ufc/mdcc/cmu/pmslib/iotmiddleware/googleawareness/IoTMiddlewareListenerImpl.java) to implement a IoT middleware listener.
 
 If you implemented a new IoT middleware adapter, then you must to set it in the PMS lib. See the example follwing:
 ```
