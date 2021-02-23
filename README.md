@@ -29,6 +29,7 @@ dependencies {
 
 ```
 Note 1: PMS lib requires the min Android SDK version 19, then include `minSdkVersion 19` in the `gredle.app`.
+
 Note 2: You can exceed the 64k methods of Android, then you must include `multiDexEnabled = true` in the `gredle.app` to compile your project .
 
 
