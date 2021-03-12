@@ -40,7 +40,7 @@ public class UserLocalizationTypeAnnotation implements SensorsTypeAnnotation {
         point =annotation.annotationDataProperty(point,"geo",
                 "time",this.time);
         sensorAnot=annotation.annotationObjectProperty("geo",sensorAnot, point, "location");
-        sensorAnot=annotation.annotationObjectProperty("foaf",sensorAnot, user, "isProprietary");
+        sensorAnot=annotation.annotationObjectProperty("foaf",sensorAnot, user, "hasProprietary");
         return annotation.returnModel();
     }
     public File writeRDF(OntModel model){
