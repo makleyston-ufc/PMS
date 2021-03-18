@@ -29,8 +29,8 @@ public class UserLocalizationTypeAnnotation implements SensorsTypeAnnotation {
                 "LocationSensor", "iot-lite", sensor.getId());
         Individual point= annotation.createIndividual("geo", "Point",
                 this.sensor.getType());
-        Individual user= annotation.createIndividual("foaf", "User",
-                this.cpf);
+        Individual user= annotation.createIndividual("foaf",this.cpf,
+                "Person");
         point =annotation.annotationDataProperty(point,"geo",
                 "lat",this.sensor.getValue().get(0));
         point =annotation.annotationDataProperty(point,"geo",
