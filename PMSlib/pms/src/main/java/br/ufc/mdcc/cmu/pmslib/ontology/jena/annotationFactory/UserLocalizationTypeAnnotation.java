@@ -25,11 +25,12 @@ public class UserLocalizationTypeAnnotation implements SensorsTypeAnnotation {
         annotation.createPrefix("ssn", "http://purl.oclc.org/NET/ssnx/ssn/");
         annotation.createPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos/");
         annotation.createPrefix("foaf", "http://xmlns.com/foaf/0.1/");
+        annotation.createPrefix("pms", "http://www.pmsexemple.com//");
         Individual sensorAnot=annotation.createIndividual("ssn",
                 "LocationSensor", "iot-lite", sensor.getId());
         Individual point= annotation.createIndividual("geo", "Point",
                 this.sensor.getType());
-        Individual user= annotation.createIndividual("foaf",this.cpf,
+        Individual user= annotation.createIndividual("pms",this.cpf, "foaf"
                 "Person");
         point =annotation.annotationDataProperty(point,"geo",
                 "lat",this.sensor.getValue().get(0));
@@ -40,7 +41,7 @@ public class UserLocalizationTypeAnnotation implements SensorsTypeAnnotation {
         point =annotation.annotationDataProperty(point,"geo",
                 "time",this.time);
         sensorAnot=annotation.annotationObjectProperty("geo",sensorAnot, point, "location");
-        sensorAnot=annotation.annotationObjectProperty("foaf",sensorAnot, user, "hasProprietary");
+        sensorAnot=annotation.annotationObjectProperty("pms",sensorAnot, user, "hasProprietary");
         return annotation.returnModel();
     }
     public File writeRDF(OntModel model){
