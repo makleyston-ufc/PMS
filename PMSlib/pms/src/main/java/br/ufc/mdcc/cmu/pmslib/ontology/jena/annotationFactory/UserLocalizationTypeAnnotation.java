@@ -36,9 +36,9 @@ public class UserLocalizationTypeAnnotation implements SensorsTypeAnnotation {
                 "lat",this.sensor.getValue().get(0));
         point =annotation.annotationDataProperty(point,"geo",
                 "long",this.sensor.getValue().get(1));
-        point =annotation.annotationDataProperty(point,"geo",
-                "data",this.data);
-        point =annotation.annotationDataProperty(point,"geo",
+        point =annotation.annotationDataProperty(point,"pms",
+                "day",this.data);
+        point =annotation.annotationDataProperty(point,"pms",
                 "time",this.time);
         sensorAnot=annotation.annotationObjectProperty("geo",sensorAnot, point, "location");
         sensorAnot=annotation.annotationObjectProperty("pms",sensorAnot, user, "hasProprietary");
