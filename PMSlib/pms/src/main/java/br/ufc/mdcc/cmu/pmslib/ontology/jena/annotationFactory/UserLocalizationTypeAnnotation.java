@@ -25,7 +25,7 @@ public class UserLocalizationTypeAnnotation implements SensorsTypeAnnotation {
         annotation.createPrefix("ssn", "http://purl.oclc.org/NET/ssnx/ssn/");
         annotation.createPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos/");
         annotation.createPrefix("foaf", "http://xmlns.com/foaf/0.1/");
-        annotation.createPrefix("pms", "http://www.pmsexemple.com//");
+        annotation.createPrefix("pms", "http://www.pmsexample.com/");
         Individual sensorAnot=annotation.createIndividual("ssn",
                 "LocationSensor", "iot-lite", sensor.getId());
         Individual point= annotation.createIndividual("geo", "Point",
