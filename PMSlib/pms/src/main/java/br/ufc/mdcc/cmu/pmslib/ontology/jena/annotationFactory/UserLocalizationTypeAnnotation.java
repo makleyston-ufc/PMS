@@ -28,7 +28,7 @@ public class UserLocalizationTypeAnnotation implements SensorsTypeAnnotation {
         annotation.createPrefix("pms", "http://www.pmsexample.com/");
         Individual sensorAnot=annotation.createIndividual("ssn",
                 "LocationSensor", "iot-lite", sensor.getId());
-        Individual point= annotation.createIndividual("geo", "Point",
+        Individual point= annotation.createIndividual("geo", "Point-"+sensor.getId(),
                 this.sensor.getType());
         Individual user= annotation.createIndividual("pms",this.cpf, "foaf"
                 "Person");
