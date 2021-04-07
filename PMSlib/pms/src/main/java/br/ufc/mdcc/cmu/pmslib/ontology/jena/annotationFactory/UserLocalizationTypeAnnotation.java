@@ -33,6 +33,8 @@ public class UserLocalizationTypeAnnotation implements SensorsTypeAnnotation {
                 this.sensor.getType());
         Individual user= annotation.createIndividual("pms",this.cpf, "foaf"
                 "Person");
+        user = annotation.annotationDataProperty(user,"pms",
+                "contactCovid",0)
         point =annotation.annotationDataProperty(point,"geo",
                 "lat",this.sensor.getValue().get(0));
         point =annotation.annotationDataProperty(point,"geo",
