@@ -21,6 +21,7 @@ public class UserLocalizationTypeAnnotation implements SensorsTypeAnnotation {
         this.time =time;
     }
     public OntModel sensorAnnotation(){
+        int number = myRandom.nextInt(100);
         annotation.createPrefix("iot-lite", "http://purl.oclc.org/NET/UNIS/fiware/iot-lite/");
         annotation.createPrefix("ssn", "http://purl.oclc.org/NET/ssnx/ssn/");
         annotation.createPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos/");
@@ -28,7 +29,7 @@ public class UserLocalizationTypeAnnotation implements SensorsTypeAnnotation {
         annotation.createPrefix("pms", "http://www.pmsexample.com/");
         Individual sensorAnot=annotation.createIndividual("ssn",
                 "LocationSensor", "iot-lite", sensor.getId());
-        Individual point= annotation.createIndividual("geo", "Point-"+sensor.getId(),
+        Individual point= annotation.createIndividual("geo", "Point-"+sensor.getId()+number,
                 this.sensor.getType());
         Individual user= annotation.createIndividual("pms",this.cpf, "foaf"
                 "Person");
